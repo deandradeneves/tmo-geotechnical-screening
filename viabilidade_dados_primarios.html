@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMO Geotechnical Screening — Viabilidade de Dados Primários</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e4e6ed;
+    --text-muted: #8b90a0;
+    --accent: #6c8aff;
+    --accent-dim: #4a5f99;
+    --green: #34d399;
+    --green-dim: rgba(52,211,153,0.12);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.12);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.12);
+    --orange: #fb923c;
+    --orange-dim: rgba(251,146,60,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .header-label {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+  .header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 3rem;
+  }
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Cards grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent-dim); }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .card-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-low { background: var(--green-dim); color: var(--green); }
+  .badge-moderate { background: var(--yellow-dim); color: var(--yellow); }
+  .badge-high { background: var(--orange-dim); color: var(--orange); }
+  .badge-critical { background: var(--red-dim); color: var(--red); }
+
+  /* Stat rows */
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+  }
+  .stat-label { color: var(--text-muted); }
+  .stat-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Full-width card */
+  .card-full {
+    grid-column: 1 / -1;
+  }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  th {
+    text-align: left;
+    padding: 0.75rem 0.5rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+  }
+  tr:last-child td { border-bottom: none; }
+  .highlight-row { background: rgba(108,138,255,0.06); }
+
+  /* Bar chart (CSS only) */
+  .bar-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0;
+  }
+  .bar-label {
+    width: 140px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .bar-track {
+    flex: 1;
+    height: 24px;
+    background: var(--surface2);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.6s ease;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--bg);
+    min-width: 40px;
+  }
+  .bar-value {
+    width: 50px;
+    text-align: right;
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Verdict box */
+  .verdict {
+    background: var(--surface);
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+  }
+  .verdict h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+    color: var(--green);
+  }
+  .verdict p {
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Pros/Cons */
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .pros-cons ul {
+    list-style: none;
+    padding: 0;
+  }
+  .pros-cons li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .pros-cons li:last-child { border-bottom: none; }
+  .pros-cons li::before {
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+  }
+  .pros li::before { content: "+"; color: var(--green); }
+  .cons li::before { content: "!"; color: var(--yellow); }
+
+  /* KPI row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.25rem;
+  }
+  .kpi-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Foundation diagram */
+  .foundation-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .foundation-cell {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    font-size: 0.75rem;
+  }
+  .foundation-cell .region {
+    font-weight: 600;
+    font-size: 0.7rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-muted);
+  }
+  .foundation-cell .ftype {
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .f-shallow { color: var(--green); }
+  .f-deep { color: var(--orange); }
+
+  .footnote {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  /* Risk gradient */
+  .risk-gradient {
+    display: flex;
+    margin: 1rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 32px;
+  }
+  .risk-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--bg);
+  }
+
+  /* Glossary variable rows */
+  .var-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 160px;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    align-items: start;
+  }
+  .var-row:last-child { border-bottom: none; }
+  .var-name {
+    font-weight: 700;
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+  .var-unit {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+  }
+  .var-desc { color: var(--text); line-height: 1.55; }
+  .var-impact { color: var(--text-muted); line-height: 1.55; }
+  .var-range {
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .var-range-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.15rem 0;
+  }
+  .var-header {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 160px;
+    gap: 1rem;
+    padding: 0.5rem 0 0.75rem;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  /* Derivation cards */
+  .deriv-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .deriv-card:hover { border-color: var(--accent-dim); }
+  .deriv-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.15rem;
+  }
+  .deriv-formula {
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: var(--surface2);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0.35rem 0 0.6rem;
+  }
+  .deriv-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 0.6rem;
+  }
+  .deriv-impact {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface2);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+  }
+  .deriv-impact strong { color: var(--text); }
+  .deriv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.25rem;
+  }
+  .deriv-scale {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+  .deriv-scale span {
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    text-align: center;
+    flex: 1;
+  }
+
+  @media (max-width: 768px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .pros-cons { grid-template-columns: 1fr; }
+    .foundation-grid { grid-template-columns: repeat(3, 1fr); }
+    .cards { grid-template-columns: 1fr; }
+    .var-row, .var-header { grid-template-columns: 1fr; }
+    .deriv-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-label">TMO &middot; FIT Holding</div>
+    <h1>Geotechnical Screening via SoilGrids</h1>
+    <p>Análise de viabilidade dos dados primários &mdash; 5 regiões brasileiras &middot; Profundidade 0-200cm</p>
+    <p style="margin-top:0.5rem; font-size:0.85rem;">3 de março de 2026</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="section">
+    <div class="section-title">Resumo da Amostragem</div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--accent);">5</div>
+        <div class="kpi-label">Regiões testadas</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--green);">14</div>
+        <div class="kpi-label">Propriedades do solo</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--yellow);">10</div>
+        <div class="kpi-label">Derivações geotécnicas</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--orange);">0 &ndash; 8</div>
+        <div class="kpi-label">Faixa de risk score</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARATIVO REGIÕES -->
+  <div class="section">
+    <div class="section-title">1. Dados Primários por Região</div>
+    <div class="card card-full" style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Região</th>
+            <th>Bioma / Solo</th>
+            <th>Argila %</th>
+            <th>Areia %</th>
+            <th>Textura USDA</th>
+            <th>pH</th>
+            <th>CEC</th>
+            <th>BD (kg/dm³)</th>
+            <th>MO %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Ribeirão Preto-SP</strong></td>
+            <td>Terra roxa / Cana</td>
+            <td>37.9</td>
+            <td>36.3</td>
+            <td>Clay Loam</td>
+            <td>5.33</td>
+            <td>12.4</td>
+            <td>1.26</td>
+            <td>1.53</td>
+          </tr>
+          <tr>
+            <td><strong>Petrolina-PE</strong></td>
+            <td>Semiárido / Caatinga</td>
+            <td>26.0</td>
+            <td>55.9</td>
+            <td>Sandy Clay Loam</td>
+            <td>6.73</td>
+            <td>19.9</td>
+            <td>1.43</td>
+            <td>0.68</td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>Londrina-PR</strong></td>
+            <td>Basalto / Terra roxa</td>
+            <td><strong>59.8</strong></td>
+            <td>17.0</td>
+            <td><strong>Clay</strong></td>
+            <td>5.22</td>
+            <td>11.4</td>
+            <td>1.31</td>
+            <td>2.01</td>
+          </tr>
+          <tr>
+            <td><strong>Brasília-DF</strong></td>
+            <td>Cerrado / Latossolo</td>
+            <td>48.9</td>
+            <td>27.1</td>
+            <td>Clay</td>
+            <td>5.38</td>
+            <td>7.3</td>
+            <td><strong>1.18</strong></td>
+            <td>1.35</td>
+          </tr>
+          <tr>
+            <td><strong>Marabá-PA</strong></td>
+            <td>Amazônia / Laterita</td>
+            <td>36.1</td>
+            <td>36.1</td>
+            <td>Clay Loam</td>
+            <td>4.97</td>
+            <td>7.4</td>
+            <td>1.46</td>
+            <td>1.34</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- GLOSSÁRIO: PROPRIEDADES PRIMÁRIAS -->
+  <div class="section">
+    <div class="section-title">2. Glossário — 14 Propriedades Primárias do Solo</div>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1.5rem;">
+      Estas são as variáveis brutas retornadas pelo SoilGrids (satélite ISRIC, resolução 250m).
+      São os <strong>dados de entrada</strong> que alimentam todas as derivações geotécnicas.
+    </p>
+
+    <div class="card card-full" style="overflow-x:auto;">
+      <div class="var-header">
+        <div>Variável</div>
+        <div>O que é</div>
+        <div>Impacto na construção</div>
+        <div>Faixas de referência</div>
+      </div>
+
+      <!-- TEXTURA -->
+      <div style="padding:0.75rem 0 0.25rem; font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--accent); font-weight:700; border-bottom:1px solid var(--border);">Textura (Granulometria)</div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">clay_pct</div>
+          <div class="var-unit">Argila (%)</div>
+        </div>
+        <div class="var-desc">
+          Fração do solo com partículas menores que 0,002mm. Argila retém água, tem alta coesão
+          e é a principal responsável por comportamento plástico e expansivo do solo.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> Argila alta (&gt;40%) = solo expansivo que incha quando molha e contrai
+          quando seca. Causa trincas em paredes, empeno de pisos, ruptura de tubulações.
+          É a variável mais importante para seguro quinquenal.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--green);">&lt;15%</span> Arenoso</div>
+          <div class="var-range-item"><span>15-40%</span> Moderado</div>
+          <div class="var-range-item"><span style="color:var(--red);">&gt;40%</span> Argiloso</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">sand_pct</div>
+          <div class="var-unit">Areia (%)</div>
+        </div>
+        <div class="var-desc">
+          Fração do solo com partículas entre 0,05mm e 2mm. Areia tem boa drenagem mas
+          baixa coesão — não "gruda". Solos arenosos são fáceis de escavar mas podem
+          desmoronar sem contenção.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> Areia alta (&gt;70%) = boa drenagem mas baixa capacidade de suporte
+          para fundações rasas. Risco de erosão em taludes e recalque por vibração.
+          Fundações precisam de maior área de contato.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--green);">&lt;50%</span> Equilíbrio</div>
+          <div class="var-range-item"><span>50-70%</span> Arenoso</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;70%</span> Muito arenoso</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">silt_pct</div>
+          <div class="var-unit">Silte (%)</div>
+        </div>
+        <div class="var-desc">
+          Fração intermediária (0,002-0,05mm). Silte é a fração mais problemática para erosão
+          — partículas leves que são carregadas pela água. Solo siltoso vira "lama" facilmente.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> Silte alto (&gt;50%) = solo altamente erodível. Sensível a
+          ciclos de umedecimento. Pode perder resistência quando saturado (liquefação em casos extremos).
+          Requer cuidado especial em taludes e aterros.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--green);">&lt;30%</span> Normal</div>
+          <div class="var-range-item"><span>30-50%</span> Siltoso</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;50%</span> Muito siltoso</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">coarse_fragments_pct</div>
+          <div class="var-unit">Fragmentos Grosseiros (%)</div>
+        </div>
+        <div class="var-desc">
+          Proporção de pedregulhos e cascalho (&gt;2mm). Indica solo pedregoso ou
+          presença de matacões. Afeta escavação e a classificação USCS.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> Fragmentos altos (&gt;30%) = dificuldade de escavação,
+          necessidade de equipamento pesado, mas geralmente boa drenagem e
+          capacidade de suporte. Pode inviabilizar estacas cravadas.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--green);">&lt;10%</span> Normal</div>
+          <div class="var-range-item"><span>10-30%</span> Pedregoso</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;30%</span> Cascalhento</div>
+        </div>
+      </div>
+
+      <!-- QUÍMICA -->
+      <div style="padding:0.75rem 0 0.25rem; font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--accent); font-weight:700; border-bottom:1px solid var(--border);">Química do Solo</div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">ph</div>
+          <div class="var-unit">pH (H2O)</div>
+        </div>
+        <div class="var-desc">
+          Acidez ou alcalinidade do solo. Escala logarítmica de 0-14.
+          Solos brasileiros são predominantemente ácidos (pH 4-6).
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> pH muito baixo (&lt;4.5) = solo ácido que corrói concreto e
+          tubulações metálicas. pH &gt;8.5 = solo alcalino/sódico com risco de dispersão.
+          Ambos exigem proteção adicional em fundações (cimento resistente a sulfatos).
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--red);">&lt;4.5</span> Muito ácido</div>
+          <div class="var-range-item"><span style="color:var(--green);">5.5-7.0</span> Ideal</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;8.5</span> Alcalino</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">cec_cmol_kg</div>
+          <div class="var-unit">CEC (cmol(c)/kg)</div>
+        </div>
+        <div class="var-desc">
+          Capacidade de Troca Catiônica — quanto o solo retém nutrientes e cátions.
+          Indica o tipo de mineral de argila presente: CEC alta = argilas expansivas (montmorilonita);
+          CEC baixa = argilas estáveis (caulinita).
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> CEC &gt;25 = provável presença de argilas 2:1 (expansivas), que
+          incham e contraem com umidade. É um proxy forte para potencial de shrink-swell.
+          CEC &lt;10 com argila alta = caulinita (estável, comum em latossolos brasileiros).
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--green);">&lt;10</span> Caulinita</div>
+          <div class="var-range-item"><span>10-25</span> Misto</div>
+          <div class="var-range-item"><span style="color:var(--red);">&gt;25</span> Expansivo</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">soc_g_kg</div>
+          <div class="var-unit">Carbono Orgânico (g/kg)</div>
+        </div>
+        <div class="var-desc">
+          Carbono orgânico do solo — indica matéria orgânica decomposta.
+          MO% = SOC x 1.724 (fator Van Bemmelen). Matéria orgânica afeta
+          plasticidade, compressibilidade e retenção de água.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> MO muito alta (&gt;5%) = solo orgânico (turfa), altamente
+          compressível e inadequado para fundações sem tratamento. MO moderada (2-4%)
+          melhora a trabalhabilidade. MO muito baixa (&lt;1%) = solo pobre, propenso a erosão.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--yellow);">&lt;5</span> Pobre</div>
+          <div class="var-range-item"><span style="color:var(--green);">5-20</span> Normal</div>
+          <div class="var-range-item"><span style="color:var(--red);">&gt;50</span> Orgânico</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">nitrogen_g_kg</div>
+          <div class="var-unit">Nitrogênio (g/kg)</div>
+        </div>
+        <div class="var-desc">
+          Nitrogênio total do solo. Proxy para atividade biológica e decomposição.
+          Correlaciona-se com matéria orgânica.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto indireto:</strong> Relevância baixa para geotecnia. Valores muito altos podem
+          indicar solo orgânico (turfa, várzea) que é compressível. Usado como complemento
+          na avaliação de solos moles.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span>&lt;10</span> Baixo</div>
+          <div class="var-range-item"><span>10-20</span> Normal</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;20</span> Alto (orgânico?)</div>
+        </div>
+      </div>
+
+      <!-- FÍSICA -->
+      <div style="padding:0.75rem 0 0.25rem; font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--accent); font-weight:700; border-bottom:1px solid var(--border);">Propriedades Físicas</div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">bulk_density_kg_dm3</div>
+          <div class="var-unit">Densidade Aparente (kg/dm³)</div>
+        </div>
+        <div class="var-desc">
+          Massa de solo seco por unidade de volume (incluindo poros). Indica quão compacto
+          ou poroso é o solo. É a variável-chave para detectar solos colapsíveis.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> BD muito baixa (&lt;1.2) = solo poroso que pode colapsar quando
+          saturado pela primeira vez (comum em Brasília). BD muito alta (&gt;1.7) = solo
+          compactado com drenagem prejudicada. Ambos são problemáticos para fundações.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--red);">&lt;1.2</span> Colapsível</div>
+          <div class="var-range-item"><span style="color:var(--green);">1.2-1.6</span> Normal</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;1.7</span> Compactado</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">water_10kpa_pct</div>
+          <div class="var-unit">Água a 10 kPa (%)</div>
+        </div>
+        <div class="var-desc">
+          Conteúdo de água volumétrico a -10 kPa (pós-drenagem gravitacional).
+          Próximo da capacidade de campo. Indica quanta água o solo retém
+          após chuva forte.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> Valores altos (&gt;40%) = solo que retém muita água, seca
+          lentamente. Aumenta pressão lateral em muros de arrimo e pode causar
+          instabilidade em taludes durante chuvas prolongadas.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--green);">&lt;25%</span> Baixa retenção</div>
+          <div class="var-range-item"><span>25-40%</span> Moderada</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;40%</span> Alta retenção</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">water_33kpa_pct</div>
+          <div class="var-unit">Água a 33 kPa (%)</div>
+        </div>
+        <div class="var-desc">
+          Capacidade de campo — a água que o solo retém contra a gravidade.
+          Base para calcular Ksat (condutividade hidráulica) e disponibilidade
+          de água para plantas.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> Usado no cálculo de Ksat (Saxton-Rawls). Quanto maior,
+          mais lenta a drenagem do solo. Diferença entre 33kPa e 1500kPa = água disponível
+          (AWC), que indica o potencial de variação volumétrica sazonal.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span>&lt;20%</span> Arenoso</div>
+          <div class="var-range-item"><span>20-35%</span> Normal</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;35%</span> Argiloso</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">water_1500kpa_pct</div>
+          <div class="var-unit">Água a 1500 kPa (%)</div>
+        </div>
+        <div class="var-desc">
+          Ponto de murcha permanente — a água que fica "presa" nos microporos
+          da argila. Quanto maior, mais argila ativa o solo tem.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto direto:</strong> Proxy para quantidade de argila ativa.
+          Valores altos (&gt;25%) = argila retém água fortemente, sugerindo minerais
+          expansivos. Usado no cálculo de Ksat e na estimativa de retração do solo.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--green);">&lt;10%</span> Arenoso</div>
+          <div class="var-range-item"><span>10-25%</span> Normal</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;25%</span> Muita argila ativa</div>
+        </div>
+      </div>
+
+      <!-- CARBONO -->
+      <div style="padding:0.75rem 0 0.25rem; font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--accent); font-weight:700; border-bottom:1px solid var(--border);">Carbono e Densidade Orgânica</div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">ocd_kg_dm3</div>
+          <div class="var-unit">Dens. Carbono Org. (kg/dm³)</div>
+        </div>
+        <div class="var-desc">
+          Densidade do carbono orgânico por volume de solo. Combina SOC com
+          bulk density. Indica a concentração real de matéria orgânica no solo.
+        </div>
+        <div class="var-impact">
+          <strong>Impacto indireto:</strong> Valores muito altos indicam solo orgânico denso (turfa
+          profunda). Reforça o diagnóstico de SOC — quando OCD é alto E BD é baixo,
+          confirma solo mole/orgânico inadequado para fundação direta.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span>&lt;5</span> Baixo</div>
+          <div class="var-range-item"><span>5-15</span> Normal</div>
+          <div class="var-range-item"><span style="color:var(--yellow);">&gt;30</span> Orgânico</div>
+        </div>
+      </div>
+
+      <div class="var-row">
+        <div>
+          <div class="var-name">oc_stock_kg_m2</div>
+          <div class="var-unit">Estoque C Org. (kg/m²)</div>
+        </div>
+        <div class="var-desc">
+          Estoque total de carbono orgânico na camada. Variável acumulativa
+          (não disponível em profundidades compostas no SoilGrids).
+        </div>
+        <div class="var-impact">
+          <strong>Impacto:</strong> Limitação técnica — retorna <code>null</code> em profundidades compostas
+          (0-30cm, 0-200cm). Disponível apenas em profundidades discretas (0-5cm, 5-15cm, etc.).
+          Baixa relevância para geotecnia.
+        </div>
+        <div class="var-range">
+          <div class="var-range-item"><span style="color:var(--text-muted);">N/A em compostas</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GLOSSÁRIO: DERIVAÇÕES GEOTÉCNICAS -->
+  <div class="section">
+    <div class="section-title">3. Glossário — 10 Derivações Geotécnicas</div>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1.5rem;">
+      Estas variáveis são <strong>calculadas</strong> a partir das 14 propriedades primárias usando funções de pedotransferência
+      (PTF) — equações empíricas validadas pela literatura geotécnica. Não são medidas diretamente.
+    </p>
+
+    <div class="deriv-grid">
+
+      <!-- 1. Ksat -->
+      <div class="deriv-card">
+        <div class="deriv-name">1. Ksat — Condutividade Hidráulica Saturada</div>
+        <div class="deriv-formula">Saxton & Rawls (2006) &rarr; mm/h</div>
+        <div class="deriv-desc">
+          Velocidade com que a água percola pelo solo saturado. Mede a <strong>capacidade de drenagem</strong>
+          natural do terreno. Calculado a partir de areia, argila, matéria orgânica e curvas de retenção de água.
+        </div>
+        <div class="deriv-impact">
+          <strong>Por que importa:</strong> Solo com Ksat baixo (&lt;1.5 mm/h) não drena bem — água
+          acumula ao redor de fundações, aumenta pressão hidrostática, causa empoçamento
+          em subsolos e garagens. Exige sistema de drenagem projetado. Solo com Ksat
+          alto (&gt;50 mm/h) pode ter erosão interna (piping).
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--red-dim); color:var(--red);">&lt;1.5 Lento</span>
+          <span style="background:var(--yellow-dim); color:var(--yellow);">1.5-15 Moderado</span>
+          <span style="background:var(--green-dim); color:var(--green);">15-50 Rápido</span>
+          <span style="background:var(--orange-dim); color:var(--orange);">&gt;150 Excessivo</span>
+        </div>
+      </div>
+
+      <!-- 2. K-factor -->
+      <div class="deriv-card">
+        <div class="deriv-name">2. K-factor — Erodibilidade do Solo</div>
+        <div class="deriv-formula">Williams/EPIC (1995) &rarr; adimensional (0-1)</div>
+        <div class="deriv-desc">
+          Fator K da Equação Universal de Perda de Solo (USLE). Mede a <strong>susceptibilidade do solo à erosão</strong>
+          por água. Solos siltosos com pouca matéria orgânica são os mais erodíveis.
+        </div>
+        <div class="deriv-impact">
+          <strong>Por que importa:</strong> K alto (&gt;0.35) = risco de erosão durante a obra (escavações expostas)
+          e após a construção (taludes, áreas não pavimentadas). Impacta diretamente o
+          custo de contenção e terraplanagem. Para seguro quinquenal, erosão ao redor da
+          edificação compromete fundações ao longo dos 5 anos.
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--green-dim); color:var(--green);">&lt;0.15 Muito Baixo</span>
+          <span style="background:var(--green-dim); color:var(--green);">0.15-0.25 Baixo</span>
+          <span style="background:var(--yellow-dim); color:var(--yellow);">0.25-0.35 Moderado</span>
+          <span style="background:var(--red-dim); color:var(--red);">&gt;0.45 Muito Alto</span>
+        </div>
+      </div>
+
+      <!-- 3. Atterberg -->
+      <div class="deriv-card">
+        <div class="deriv-name">3. Limites de Atterberg (LL, PL, PI)</div>
+        <div class="deriv-formula">PTF Regressão: LL = 0.57&middot;clay + 0.29&middot;CEC + 2&middot;OC + 10</div>
+        <div class="deriv-desc">
+          <strong>Limite de Liquidez (LL):</strong> umidade acima da qual o solo se comporta como líquido.<br>
+          <strong>Limite de Plasticidade (PL):</strong> umidade abaixo da qual o solo se torna quebradiço.<br>
+          <strong>Índice de Plasticidade (PI = LL - PL):</strong> faixa de umidade onde o solo é "moldável".
+          PI alto = solo que muda muito de volume com a umidade.
+        </div>
+        <div class="deriv-impact">
+          <strong>Por que importa:</strong> PI &gt;25 = solo altamente plástico — incha e contrai com ciclos
+          de umidade, causando recalques diferenciais, trincas em alvenaria e empenamento
+          de pisos. É o indicador mais usado na engenharia civil para classificar solos
+          problemáticos. Define a classificação USCS.
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--green-dim); color:var(--green);">&lt;7 Não plástico</span>
+          <span style="background:var(--yellow-dim); color:var(--yellow);">7-25 Moderado</span>
+          <span style="background:var(--orange-dim); color:var(--orange);">25-40 Alto</span>
+          <span style="background:var(--red-dim); color:var(--red);">&gt;40 Muito Alto</span>
+        </div>
+      </div>
+
+      <!-- 4. USCS -->
+      <div class="deriv-card">
+        <div class="deriv-name">4. USCS — Classificação Unificada do Solo</div>
+        <div class="deriv-formula">Textura + PI &rarr; Grupo (GW, GP, GM, GC, SW, SP, SM, SC, ML, CL, MH, CH...)</div>
+        <div class="deriv-desc">
+          Sistema internacional de classificação de solos para engenharia.
+          Divide os solos em grosseiros (areias e pedregulhos) e finos (siltes e argilas),
+          usando textura e plasticidade. Cada grupo tem comportamento construtivo conhecido.
+        </div>
+        <div class="deriv-impact">
+          <strong>Por que importa:</strong> O grupo USCS é a "linguagem universal" da engenharia de solos.
+          Determina diretamente o tipo de fundação viável.
+          <strong>CH</strong> (Fat Clay) e <strong>MH</strong> (Elastic Silt) = fundação profunda obrigatória.
+          <strong>SC/SM</strong> = geralmente fundação rasa adequada.
+          <strong>SP/GP</strong> = boa drenagem mas pode precisar de reforço.
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--green-dim); color:var(--green);">SP/SW/GP Granulares</span>
+          <span style="background:var(--green-dim); color:var(--green);">SC/SM/GM Mistos</span>
+          <span style="background:var(--yellow-dim); color:var(--yellow);">CL/ML Finos</span>
+          <span style="background:var(--red-dim); color:var(--red);">CH/MH/OH Problem.</span>
+        </div>
+      </div>
+
+      <!-- 5. Shrink-Swell -->
+      <div class="deriv-card">
+        <div class="deriv-name">5. Shrink-Swell — Potencial Expansivo</div>
+        <div class="deriv-formula">Score: clay (0-3) + CEC (0-3) + PI (0-3) = 0-9</div>
+        <div class="deriv-desc">
+          Avalia se o solo expande quando molha e contrai quando seca. Combina três indicadores:
+          teor de argila, tipo de mineral (CEC) e plasticidade (PI). É o principal preditor de
+          <strong>dano estrutural em edificações</strong>.
+        </div>
+        <div class="deriv-impact">
+          <strong>Por que importa:</strong> Solos expansivos são a causa #1 de sinistros em seguros
+          quinquenais. A variação de volume gera forças que trincam fundações, deslocam
+          paredes, rompem tubulações e empenam pisos. Moderado-High e High exigem
+          fundação profunda e isolamento do solo com camada de brita/manta.
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--green-dim); color:var(--green);">0-2 Baixo</span>
+          <span style="background:var(--yellow-dim); color:var(--yellow);">3-4 Moderado</span>
+          <span style="background:var(--orange-dim); color:var(--orange);">5-6 Mod-Alto</span>
+          <span style="background:var(--red-dim); color:var(--red);">7-9 Alto</span>
+        </div>
+      </div>
+
+      <!-- 6. Compaction -->
+      <div class="deriv-card">
+        <div class="deriv-name">6. Compactação — Razão de Densidade Crítica</div>
+        <div class="deriv-formula">Reichert (2009): BD_crit = 1.86 - 0.0071&middot;clay &rarr; ratio = BD/BD_crit</div>
+        <div class="deriv-desc">
+          Compara a densidade atual do solo com o limite de densidade que impede o crescimento
+          de raízes e a infiltração de água. Razão &gt;0.9 indica solo já próximo do limite;
+          &gt;1.0 indica solo sobre-compactado.
+        </div>
+        <div class="deriv-impact">
+          <strong>Por que importa:</strong> Solo compactado (&gt;0.9) drena mal, cria empoçamento e
+          pressão hidrostática contra fundações. Em aterros, compactação é desejável
+          (controlada). Em solo natural, compactação excessiva indica camada impeditiva
+          que altera o fluxo de água subterrâneo.
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--green-dim); color:var(--green);">&lt;0.8 Muito Baixo</span>
+          <span style="background:var(--green-dim); color:var(--green);">0.8-0.9 Baixo</span>
+          <span style="background:var(--yellow-dim); color:var(--yellow);">0.9-1.0 Moderado</span>
+          <span style="background:var(--red-dim); color:var(--red);">&gt;1.0 Alto</span>
+        </div>
+      </div>
+
+      <!-- 7. CBR -->
+      <div class="deriv-card">
+        <div class="deriv-name">7. CBR — Índice de Suporte Califórnia</div>
+        <div class="deriv-formula">Regressão: CBR = 24.5 - 0.26&middot;PI - 0.15&middot;clay - 1.2&middot;OM</div>
+        <div class="deriv-desc">
+          Estima a resistência do solo à penetração — quanto maior o CBR, mais peso
+          o solo suporta. É o índice padrão para dimensionamento de pavimentos e
+          pisos industriais. Valor estimado aqui (real requer ensaio de laboratório).
+        </div>
+        <div class="var-impact">
+          <strong>Por que importa:</strong> CBR &lt;3 = solo muito mole, não suporta nem pavimento leve.
+          CBR &lt;5 = subgrade pobre, exige reforço. CBR &gt;10 = satisfatório para a maioria
+          das aplicações. Impacta diretamente o custo de pavimentação, pisos e áreas
+          de estacionamento. Para seguro, CBR baixo = risco de recalque.
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--red-dim); color:var(--red);">&lt;3 Muito Pobre</span>
+          <span style="background:var(--yellow-dim); color:var(--yellow);">3-5 Pobre</span>
+          <span style="background:var(--yellow-dim); color:var(--yellow);">5-10 Razoável</span>
+          <span style="background:var(--green-dim); color:var(--green);">&gt;10 Bom</span>
+        </div>
+      </div>
+
+      <!-- 8. Foundation -->
+      <div class="deriv-card">
+        <div class="deriv-name">8. Avaliação de Fundação</div>
+        <div class="deriv-formula">USCS + Shrink-Swell + CBR + BD &rarr; Rasa OK / Profunda</div>
+        <div class="deriv-desc">
+          Avaliação integrada que cruza classificação do solo, expansividade, capacidade
+          de suporte e densidade para recomendar se <strong>fundação rasa</strong> (sapata, radier)
+          é viável ou se <strong>fundação profunda</strong> (estaca, hélice contínua) é necessária.
+        </div>
+        <div class="deriv-impact">
+          <strong>Por que importa:</strong> Fundação profunda custa 3-10x mais que rasa. Para seguro
+          quinquenal, uma fundação inadequada é a principal causa de sinistro. A API
+          identifica os motivos específicos (expansividade, CBR baixo, solo colapsível)
+          e gera recomendações de tipos de fundação.
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--green-dim); color:var(--green);">Rasa OK &mdash; Sapata/Radier</span>
+          <span style="background:var(--red-dim); color:var(--red);">Profunda &mdash; Estaca/Hélice</span>
+        </div>
+      </div>
+
+      <!-- 9. Layer Comparison -->
+      <div class="deriv-card">
+        <div class="deriv-name">9. Comparação de Camadas (Topsoil vs Subsoil)</div>
+        <div class="deriv-formula">clay_jump = subsoil.clay - topsoil.clay &rarr; impediment_layer (T/F)</div>
+        <div class="deriv-desc">
+          Detecta transições bruscas entre camadas do solo. Um "salto" de argila &gt;15%
+          entre topsoil e subsoil indica <strong>horizonte B textural</strong> — uma camada impermeável
+          que barra a drenagem vertical e cria lençol suspenso.
+        </div>
+        <div class="deriv-impact">
+          <strong>Por que importa:</strong> Camada impedimento causa: (1) empoçamento temporário acima
+          da camada durante chuvas, (2) pressão lateral em muros de arrimo, (3) erosão
+          interna na interface entre camadas. Requer drenagem subsuperficial projetada.
+          Para seguros, é risco de infiltração e dano a subsolos/garagens.
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--green-dim); color:var(--green);">&lt;8% Suave</span>
+          <span style="background:var(--yellow-dim); color:var(--yellow);">8-15% Moderado</span>
+          <span style="background:var(--red-dim); color:var(--red);">&gt;15% Impedimento</span>
+        </div>
+      </div>
+
+      <!-- 10. Risk Score -->
+      <div class="deriv-card" style="border-color:var(--accent);">
+        <div class="deriv-name">10. Risk Score — Pontuação de Risco Geotécnico</div>
+        <div class="deriv-formula">8 flags &times; 2 pontos = 0-16 &rarr; premium_factor</div>
+        <div class="deriv-desc">
+          Pontuação final que agrega todas as derivações em um <strong>número único</strong> para
+          underwriting de seguro. Cada flag representa um fator de risco independente.
+          O premium_factor é um multiplicador sugerido para o prêmio do seguro quinquenal.
+        </div>
+        <div class="deriv-impact">
+          <strong>Por que importa:</strong> É a variável de saída do sistema — resume toda a avaliação
+          em uma decisão acionável: aprovar seguro normal (Low), exigir inspeção extra
+          (Moderate), exigir laudo geotécnico completo (Moderate-High), ou recusar/cobrar
+          prêmio majorado (High). Gera automaticamente checklist de inspeção.
+        </div>
+        <div class="deriv-scale">
+          <span style="background:var(--green); color:var(--bg);">0-4 Low (1.0x)</span>
+          <span style="background:var(--yellow); color:var(--bg);">5-8 Mod (1.15x)</span>
+          <span style="background:var(--orange); color:var(--bg);">9-12 M-H (1.35x)</span>
+          <span style="background:var(--red); color:var(--bg);">13-16 High (1.60x)</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ARGILA CHART -->
+  <div class="section">
+    <div class="section-title">4. Distribuição de Argila (Topsoil vs Subsoil)</div>
+    <div class="card card-full">
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+        A diferença de argila entre camadas (clay jump) indica potencial de camada impedimento e risco de empoçamento.
+      </p>
+
+      <div style="margin-bottom:0.25rem; font-size:0.75rem; color:var(--text-muted); font-weight:600;">TOPSOIL (0-200cm média)</div>
+      <div class="bar-container">
+        <div class="bar-label">Ribeirão Preto</div>
+        <div class="bar-track"><div class="bar-fill" style="width:63%; background: linear-gradient(90deg, #6c8aff, #4a5f99);">37.9%</div></div>
+        <div class="bar-value">37.9%</div>
+      </div>
+      <div class="bar-container">
+        <div class="bar-label">Petrolina</div>
+        <div class="bar-track"><div class="bar-fill" style="width:43%; background: linear-gradient(90deg, var(--green), #1a9969);">26.0%</div></div>
+        <div class="bar-value">26.0%</div>
+      </div>
+      <div class="bar-container">
+        <div class="bar-label">Londrina</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100%; background: linear-gradient(90deg, var(--orange), var(--red));">59.8%</div></div>
+        <div class="bar-value" style="color:var(--orange);">59.8%</div>
+      </div>
+      <div class="bar-container">
+        <div class="bar-label">Brasília</div>
+        <div class="bar-track"><div class="bar-fill" style="width:82%; background: linear-gradient(90deg, var(--yellow), #c99700);">48.9%</div></div>
+        <div class="bar-value">48.9%</div>
+      </div>
+      <div class="bar-container">
+        <div class="bar-label">Marabá</div>
+        <div class="bar-track"><div class="bar-fill" style="width:60%; background: linear-gradient(90deg, #6c8aff, #4a5f99);">36.1%</div></div>
+        <div class="bar-value">36.1%</div>
+      </div>
+
+      <div style="margin-top:1.5rem; margin-bottom:0.25rem; font-size:0.75rem; color:var(--text-muted); font-weight:600;">SUBSOIL (30-100cm)</div>
+      <div class="bar-container">
+        <div class="bar-label">Ribeirão Preto</div>
+        <div class="bar-track"><div class="bar-fill" style="width:65%; background: linear-gradient(90deg, #6c8aff88, #4a5f9988);">39.4%</div></div>
+        <div class="bar-value">+1.6%</div>
+      </div>
+      <div class="bar-container">
+        <div class="bar-label">Petrolina</div>
+        <div class="bar-track"><div class="bar-fill" style="width:46%; background: linear-gradient(90deg, var(--green)88, #1a996988);">27.7%</div></div>
+        <div class="bar-value">+1.7%</div>
+      </div>
+      <div class="bar-container">
+        <div class="bar-label">Londrina</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100%; background: linear-gradient(90deg, var(--orange)88, var(--red)88);">61.3%</div></div>
+        <div class="bar-value" style="color:var(--orange);">+1.5%</div>
+      </div>
+      <div class="bar-container">
+        <div class="bar-label">Brasília</div>
+        <div class="bar-track"><div class="bar-fill" style="width:82%; background: linear-gradient(90deg, var(--yellow)88, #c9970088);">49.3%</div></div>
+        <div class="bar-value">+0.4%</div>
+      </div>
+      <div class="bar-container">
+        <div class="bar-label">Marabá</div>
+        <div class="bar-track"><div class="bar-fill" style="width:62%; background: linear-gradient(90deg, #6c8aff88, #4a5f9988);">37.1%</div></div>
+        <div class="bar-value">+1.0%</div>
+      </div>
+
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-top:1rem;">
+        Nenhuma região testada apresentou clay jump > 15% (threshold para camada impedimento).
+        Os perfis 0-200cm suavizam o gradiente — em profundidades discretas (0-30cm vs 30-100cm), jumps seriam mais pronunciados.
+      </p>
+    </div>
+  </div>
+
+  <!-- DERIVAÇÕES GEOTÉCNICAS -->
+  <div class="section">
+    <div class="section-title">5. Derivações Geotécnicas — Comparativo</div>
+    <div class="card card-full" style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Região</th>
+            <th>USCS</th>
+            <th>Ksat (mm/h)</th>
+            <th>K-factor</th>
+            <th>PI est.</th>
+            <th>Shrink-Swell</th>
+            <th>CBR</th>
+            <th>Compaction</th>
+            <th>Fundação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Rib. Preto</strong></td>
+            <td>CL</td>
+            <td style="color:var(--yellow);">1.49</td>
+            <td>0.216</td>
+            <td>15.9</td>
+            <td><span class="badge badge-moderate">Moderate</span></td>
+            <td>12.9</td>
+            <td>0.79</td>
+            <td><span style="color:var(--green);">Rasa OK</span></td>
+          </tr>
+          <tr>
+            <td><strong>Petrolina</strong></td>
+            <td>SC</td>
+            <td style="color:var(--green);">6.74</td>
+            <td>0.218</td>
+            <td>14.3</td>
+            <td><span class="badge badge-moderate">Moderate</span></td>
+            <td>16.1</td>
+            <td>0.85</td>
+            <td><span style="color:var(--green);">Rasa OK</span></td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>Londrina</strong></td>
+            <td style="color:var(--red);"><strong>CH</strong></td>
+            <td style="color:var(--red);">0.53</td>
+            <td>0.216</td>
+            <td><strong>20.6</strong></td>
+            <td><span class="badge badge-high">Mod-High</span></td>
+            <td style="color:var(--yellow);">7.8</td>
+            <td style="color:var(--yellow);">0.91</td>
+            <td><span style="color:var(--orange);">Profunda</span></td>
+          </tr>
+          <tr>
+            <td><strong>Brasília</strong></td>
+            <td>CL</td>
+            <td style="color:var(--red);">0.58</td>
+            <td>0.227</td>
+            <td>17.3</td>
+            <td><span class="badge badge-moderate">Moderate</span></td>
+            <td>11.0</td>
+            <td>0.78</td>
+            <td><span style="color:var(--orange);">Profunda*</span></td>
+          </tr>
+          <tr>
+            <td><strong>Marabá</strong></td>
+            <td>CL</td>
+            <td style="color:var(--green);">1.80</td>
+            <td>0.232</td>
+            <td>14.6</td>
+            <td><span class="badge badge-low">Low</span></td>
+            <td>13.7</td>
+            <td style="color:var(--yellow);">0.91</td>
+            <td><span style="color:var(--green);">Rasa OK</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem;">
+        * Brasília: fundação profunda recomendada por BD muito baixa (1.18) — solo poroso/colapsível típico de latossolo.
+      </p>
+    </div>
+  </div>
+
+  <!-- RISK SCORING -->
+  <div class="section">
+    <div class="section-title">6. Risk Scoring — Distribuição e Flags</div>
+
+    <div class="cards">
+      <!-- Risk scale -->
+      <div class="card card-full">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Escala de Risco (0-16 pontos)</div>
+            <div class="card-subtitle">8 flags x 2 pontos cada — posição das 5 regiões marcada</div>
+          </div>
+        </div>
+
+        <div class="risk-gradient">
+          <div class="risk-segment" style="flex:5; background: var(--green);">
+            0-4 Low
+          </div>
+          <div class="risk-segment" style="flex:4; background: var(--yellow);">
+            5-8 Moderate
+          </div>
+          <div class="risk-segment" style="flex:4; background: var(--orange);">
+            9-12 Mod-High
+          </div>
+          <div class="risk-segment" style="flex:4; background: var(--red);">
+            13-16 High
+          </div>
+        </div>
+
+        <div style="position: relative; height: 60px; margin: 0.5rem 0;">
+          <!-- Region markers -->
+          <div style="position:absolute; left:0%; text-align:center; transform:translateX(-50%); left:0%;">
+            <div style="font-size:1.2rem;">&#9650;</div>
+            <div style="font-size:0.65rem; font-weight:600;">Petrolina<br><span style="color:var(--green);">0</span></div>
+          </div>
+          <div style="position:absolute; text-align:center; transform:translateX(-50%); left:12.5%;">
+            <div style="font-size:1.2rem;">&#9650;</div>
+            <div style="font-size:0.65rem; font-weight:600;">Rib.Preto / BSB / Marabá<br><span style="color:var(--green);">2</span></div>
+          </div>
+          <div style="position:absolute; text-align:center; transform:translateX(-50%); left:50%;">
+            <div style="font-size:1.2rem; color:var(--yellow);">&#9650;</div>
+            <div style="font-size:0.65rem; font-weight:600; color:var(--yellow);">Londrina<br>8</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flags per region -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Flags Ativadas</div>
+          <span class="badge badge-moderate">Londrina &mdash; 4 flags</span>
+        </div>
+        <ul style="list-style:none; font-size:0.85rem;">
+          <li style="padding:0.4rem 0; border-bottom:1px solid var(--border);">
+            <span style="color:var(--red);">&#9679;</span> Low permeability (Ksat < 1.5)
+          </li>
+          <li style="padding:0.4rem 0; border-bottom:1px solid var(--border);">
+            <span style="color:var(--orange);">&#9679;</span> Shrink-swell: Moderate-High
+          </li>
+          <li style="padding:0.4rem 0; border-bottom:1px solid var(--border);">
+            <span style="color:var(--yellow);">&#9679;</span> Compaction ratio: 0.913
+          </li>
+          <li style="padding:0.4rem 0;">
+            <span style="color:var(--red);">&#9679;</span> USCS group: CH (Fat Clay)
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Flags por Região</div>
+        </div>
+        <div style="font-size:0.85rem;">
+          <div class="bar-container">
+            <div class="bar-label">Petrolina</div>
+            <div class="bar-track"><div class="bar-fill" style="width:5%; background:var(--green); min-width:30px;">0</div></div>
+          </div>
+          <div class="bar-container">
+            <div class="bar-label">Ribeirão Preto</div>
+            <div class="bar-track"><div class="bar-fill" style="width:25%; background:var(--green);">1</div></div>
+          </div>
+          <div class="bar-container">
+            <div class="bar-label">Brasília</div>
+            <div class="bar-track"><div class="bar-fill" style="width:25%; background:var(--green);">1</div></div>
+          </div>
+          <div class="bar-container">
+            <div class="bar-label">Marabá</div>
+            <div class="bar-track"><div class="bar-fill" style="width:25%; background:var(--green);">1</div></div>
+          </div>
+          <div class="bar-container">
+            <div class="bar-label">Londrina</div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%; background: linear-gradient(90deg, var(--yellow), var(--orange));">4</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPO DE FUNDAÇÃO -->
+  <div class="section">
+    <div class="section-title">7. Recomendação de Fundação por Região</div>
+    <div class="card card-full">
+      <div class="foundation-grid">
+        <div class="foundation-cell">
+          <div class="region">Rib. Preto-SP</div>
+          <div class="ftype f-shallow">RASA</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.25rem;">Sapata, Radier, Tubulão</div>
+        </div>
+        <div class="foundation-cell">
+          <div class="region">Petrolina-PE</div>
+          <div class="ftype f-shallow">RASA</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.25rem;">Sapata, Radier, Tubulão</div>
+        </div>
+        <div class="foundation-cell" style="border:1px solid var(--orange);">
+          <div class="region">Londrina-PR</div>
+          <div class="ftype f-deep">PROFUNDA</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.25rem;">Estaca, Hélice, Radier estaqueado</div>
+        </div>
+        <div class="foundation-cell" style="border:1px solid var(--yellow);">
+          <div class="region">Brasília-DF</div>
+          <div class="ftype f-deep">PROFUNDA*</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.25rem;">Solo colapsível (BD 1.18)</div>
+        </div>
+        <div class="foundation-cell">
+          <div class="region">Marabá-PA</div>
+          <div class="ftype f-shallow">RASA</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.25rem;">Sapata, Radier, Tubulão</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALIDAÇÃO QUALITATIVA -->
+  <div class="section">
+    <div class="section-title">8. Validação Qualitativa — O Dado Faz Sentido?</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Londrina (Terra Roxa)</div>
+          <span class="badge badge-high">Correto</span>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted);">
+          60% argila, USCS CH (Fat Clay), shrink-swell Moderate-High.
+          <strong>Exatamente o esperado</strong> para solo derivado de basalto no norte do PR.
+          A terra roxa estruturada é reconhecida na engenharia civil por problemas de expansividade.
+          Score 8 é coerente com a realidade construtiva da região.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Brasília (Latossolo)</div>
+          <span class="badge badge-high">Correto</span>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted);">
+          49% argila mas BD de apenas 1.18 — detectou corretamente o <strong>latossolo poroso/colapsível</strong>.
+          Este é um problema amplamente documentado em Brasília (solos do Planalto Central).
+          A API flagou "possible loose/collapsible soil" e recomendou fundação profunda. Preciso.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Petrolina (Semiárido)</div>
+          <span class="badge badge-high">Correto</span>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted);">
+          Solo arenoso (56% areia), pH 6.7 (neutro), CEC alto (19.9 — minerais 2:1),
+          MO muito baixa (0.68%). <strong>Perfil típico de caatinga</strong>. Score zero é adequado —
+          solos do semiárido nordestino geralmente têm boa capacidade de suporte.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Marabá (Amazônia)</div>
+          <span class="badge badge-moderate">Plausível</span>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted);">
+          Clay Loam, BD 1.46, compaction ratio 0.91. O dado é coerente com
+          <strong>solos lateríticos da Amazônia Oriental</strong> — relativamente densos,
+          argilo-arenosos. O flag de compactação é realista (solos amazônicos compactados
+          por desmatamento são um problema documentado).
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORÇAS E LIMITAÇÕES -->
+  <div class="section">
+    <div class="section-title">9. Forças e Limitações dos Dados</div>
+    <div class="card card-full">
+      <div class="pros-cons">
+        <div class="pros">
+          <h4 style="margin-bottom:0.75rem; color:var(--green);">Pontos Fortes</h4>
+          <ul>
+            <li>Diferenciação clara entre tipos de solo (SC vs CL vs CH) — escala de risco funciona</li>
+            <li>Detecção correta de solos problemáticos (expandir/colapsível) em regiões conhecidas</li>
+            <li>Cobertura Brasil inteiro (250m) — qualquer coordenada rural funciona</li>
+            <li>Resposta em 5-15s — viável para triagem automatizada em escala</li>
+            <li>Custo zero de aquisição (SoilGrids é público, GEE free tier)</li>
+            <li>Dual-depth (topsoil + subsoil) detecta transições de camada</li>
+            <li>14 propriedades medidas + 10 derivações = cobertura abrangente</li>
+            <li>Backward-compatible — não quebra uso agrícola existente (Terra Verde)</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4 style="margin-bottom:0.75rem; color:var(--yellow);">Limitações e Riscos</h4>
+          <ul>
+            <li>Resolução 250m — não captura variações locais (aterros, cortes, lençol freático)</li>
+            <li>Atterberg Limits são estimados (PTF), não medidos — margem de erro ~15-20%</li>
+            <li>Sem dados de lençol freático, profundidade de rocha, ou nível d'água</li>
+            <li>Áreas urbanas densas retornam null (SoilGrids não cobre áreas impermeabilizadas)</li>
+            <li>CBR estimado por regressão — apenas screening, não substitui ensaio</li>
+            <li><code>ocs</code> (Organic Carbon Stock) retorna erro em profundidades compostas</li>
+            <li>USCS é aproximação por textura — sem análise granulométrica real</li>
+            <li>Clay jump suavizado em 0-200cm — profundidades discretas mostram mais contraste</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POSICIONAMENTO DE MERCADO -->
+  <div class="section">
+    <div class="section-title">10. Posicionamento — Onde Isso Se Encaixa</div>
+    <div class="card card-full">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th style="text-align:center;">Investigação Tradicional<br><span style="font-weight:400; text-transform:none;">(SPT, CPT, Lab)</span></th>
+            <th style="text-align:center; color:var(--accent);">TMO Screening API<br><span style="font-weight:400; text-transform:none;">(SoilGrids + PTF)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Custo</td>
+            <td style="text-align:center;">R$ 5.000 - 50.000</td>
+            <td style="text-align:center; color:var(--green);">~R$ 0</td>
+          </tr>
+          <tr>
+            <td>Tempo</td>
+            <td style="text-align:center;">2-6 semanas</td>
+            <td style="text-align:center; color:var(--green);">5-15 segundos</td>
+          </tr>
+          <tr>
+            <td>Cobertura</td>
+            <td style="text-align:center;">1 ponto por furo</td>
+            <td style="text-align:center; color:var(--green);">Qualquer coord. rural do Brasil</td>
+          </tr>
+          <tr>
+            <td>Precisão</td>
+            <td style="text-align:center; color:var(--green);">Alta (dado real)</td>
+            <td style="text-align:center; color:var(--yellow);">Moderada (estimado)</td>
+          </tr>
+          <tr>
+            <td>Uso</td>
+            <td style="text-align:center;">Projeto executivo</td>
+            <td style="text-align:center;">Triagem / Underwriting</td>
+          </tr>
+          <tr>
+            <td>Substitui campo?</td>
+            <td style="text-align:center;">N/A</td>
+            <td style="text-align:center; color:var(--yellow);"><strong>Não</strong> — complementa</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-top:1rem; padding:1rem; background:var(--surface2); border-radius:8px;">
+        <strong>Proposta de valor:</strong> A API não substitui a investigação geotécnica de campo.
+        Ela atua como <strong>filtro de primeira passagem</strong> — identifica em segundos se o local
+        tem risco baixo (inspeção padrão suficiente) ou alto (requer investigação completa antes de aprovar seguro).
+        Em um portfólio de 1.000 imóveis, pode reduzir investigações caras em 60-70% dos casos classificados como Low Risk.
+      </p>
+    </div>
+  </div>
+
+  <!-- VEREDITO -->
+  <div class="section">
+    <div class="section-title">11. Veredito</div>
+    <div class="verdict">
+      <h3>VIÁVEL — Dados suficientes para MVP de triagem</h3>
+      <p>
+        Os dados primários do SoilGrids demonstram <strong>capacidade real de diferenciação</strong> entre
+        solos de baixo e alto risco geotécnico. As 5 regiões testadas produziram resultados
+        <strong>qualitativamente corretos</strong> quando comparados com o conhecimento pedológico estabelecido.
+        O risk score de 0-16 pontos gera estratificação significativa para underwriting de seguro quinquenal.
+      </p>
+      <div style="margin-top:1.5rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; max-width:600px; margin-left:auto; margin-right:auto;">
+        <div>
+          <div style="font-size:1.5rem; font-weight:700; color:var(--green);">GO</div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">Triagem automatizada</div>
+        </div>
+        <div>
+          <div style="font-size:1.5rem; font-weight:700; color:var(--green);">GO</div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">Precificação de prêmio</div>
+        </div>
+        <div>
+          <div style="font-size:1.5rem; font-weight:700; color:var(--yellow);">VALIDAR</div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">Calibrar com dados reais SPT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRÓXIMOS PASSOS -->
+  <div class="section">
+    <div class="section-title">12. Próximos Passos</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:0.75rem;">Curto Prazo (Fase 2)</div>
+        <ul style="list-style:none; font-size:0.85rem;">
+          <li style="padding:0.35rem 0; color:var(--text-muted);">1. Integrar SRTM (declividade + aspecto) para análise de drenagem</li>
+          <li style="padding:0.35rem 0; color:var(--text-muted);">2. Integrar HiHydroSoil (Ksat medido, não estimado)</li>
+          <li style="padding:0.35rem 0; color:var(--text-muted);">3. Testar com 50+ coordenadas de obras reais da TMO</li>
+          <li style="padding:0.35rem 0; color:var(--text-muted);">4. Calibrar risk score com laudos SPT existentes</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:0.75rem;">Médio Prazo (Fase 3-4)</div>
+        <ul style="list-style:none; font-size:0.85rem;">
+          <li style="padding:0.35rem 0; color:var(--text-muted);">5. Agente AI para geração de laudo preliminar (n8n + MCP)</li>
+          <li style="padding:0.35rem 0; color:var(--text-muted);">6. PDF de relatório com mapas de risco</li>
+          <li style="padding:0.35rem 0; color:var(--text-muted);">7. Portal do cliente (construtoras)</li>
+          <li style="padding:0.35rem 0; color:var(--text-muted);">8. Integração SUSEP para dados regulatórios</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    TMO Geotechnical Screening &middot; FIT Holding &middot; GoSellers AI &middot; Dados: SoilGrids 250m v2.0 (ISRIC via GEE) &middot; Março 2026
+  </div>
+
+</div>
+</body>
+</html>

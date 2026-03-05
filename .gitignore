@@ -1,0 +1,4 @@
+*.pdf
+resultados/*.json
+resultados/*.md
+tasks/

@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMO — Validação Geotécnica: Água Azul</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e4e6ed;
+    --text-muted: #8b90a0;
+    --accent: #6c8aff;
+    --accent-dim: #4a5f99;
+    --green: #34d399;
+    --green-dim: rgba(52,211,153,0.12);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.12);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.12);
+    --orange: #fb923c;
+    --orange-dim: rgba(251,146,60,0.12);
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34,211,238,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+
+  .container { max-width: 1280px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .header-label {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+  .header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+  .header-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .header-meta-item {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .header-meta-item strong {
+    color: var(--text);
+  }
+
+  /* Section */
+  .section { margin-bottom: 3rem; }
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* KPI row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.25rem;
+  }
+  .kpi-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Cards grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent-dim); }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .card-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .card-full { grid-column: 1 / -1; }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-convergent { background: var(--green-dim); color: var(--green); }
+  .badge-divergent { background: var(--red-dim); color: var(--red); }
+  .badge-partial { background: var(--yellow-dim); color: var(--yellow); }
+  .badge-na { background: var(--surface2); color: var(--text-muted); }
+  .badge-api { background: var(--cyan-dim); color: var(--cyan); }
+  .badge-laudo { background: var(--orange-dim); color: var(--orange); }
+
+  /* Fontes info box */
+  .sources {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .source-box {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border-left: 4px solid;
+  }
+  .source-box.api { border-left-color: var(--cyan); }
+  .source-box.laudo { border-left-color: var(--orange); }
+  .source-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .source-box.api .source-label { color: var(--cyan); }
+  .source-box.laudo .source-label { color: var(--orange); }
+  .source-detail {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .source-detail strong { color: var(--text); }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  th {
+    text-align: left;
+    padding: 0.75rem 0.5rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+  }
+  tr:last-child td { border-bottom: none; }
+  .highlight-row { background: rgba(108,138,255,0.06); }
+
+  /* Comparison row */
+  .cmp-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 60px 1fr 140px;
+    gap: 0.75rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    align-items: center;
+  }
+  .cmp-row:last-child { border-bottom: none; }
+  .cmp-header {
+    display: grid;
+    grid-template-columns: 200px 1fr 60px 1fr 140px;
+    gap: 0.75rem;
+    padding: 0.5rem 0 0.75rem;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .cmp-param {
+    font-weight: 600;
+    font-size: 0.82rem;
+  }
+  .cmp-vs {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .cmp-api {
+    background: var(--cyan-dim);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .cmp-laudo {
+    background: var(--orange-dim);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .cmp-api .val { font-weight: 700; color: var(--cyan); }
+  .cmp-laudo .val { font-weight: 700; color: var(--orange); }
+  .cmp-api .unit, .cmp-laudo .unit { font-size: 0.72rem; color: var(--text-muted); }
+
+  /* Delta indicator */
+  .delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+  }
+  .delta-ok { background: var(--green-dim); color: var(--green); }
+  .delta-warn { background: var(--yellow-dim); color: var(--yellow); }
+  .delta-bad { background: var(--red-dim); color: var(--red); }
+
+  /* Depth profile */
+  .depth-grid {
+    display: grid;
+    grid-template-columns: 120px repeat(7, 1fr);
+    gap: 0;
+    font-size: 0.78rem;
+  }
+  .depth-cell {
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .depth-cell.label {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+  .depth-cell.header {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 2px solid var(--border);
+  }
+  .depth-cell.highlight {
+    background: rgba(108,138,255,0.06);
+    font-weight: 600;
+  }
+
+  /* SPT profile */
+  .spt-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.35rem 0;
+  }
+  .spt-depth-label {
+    width: 80px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .spt-track {
+    flex: 1;
+    height: 20px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .spt-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--bg);
+    min-width: 24px;
+  }
+  .spt-class {
+    width: 120px;
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  /* Cascade diagram */
+  .cascade {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 1rem 0;
+  }
+  .cascade-root {
+    background: var(--red-dim);
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--red);
+  }
+  .cascade-arrow {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    padding: 0.2rem 0;
+  }
+  .cascade-children {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.6rem;
+  }
+  .cascade-child {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+    font-size: 0.78rem;
+    border: 1px solid var(--border);
+  }
+  .cascade-child .param { font-weight: 700; margin-bottom: 0.25rem; }
+  .cascade-child .api-val { color: var(--cyan); font-size: 0.75rem; }
+  .cascade-child .real-val { color: var(--orange); font-size: 0.75rem; }
+
+  /* Verdict */
+  .verdict {
+    background: var(--surface);
+    border: 2px solid var(--yellow);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+  }
+  .verdict h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+    color: var(--yellow);
+  }
+  .verdict p {
+    color: var(--text-muted);
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Pros/Cons */
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .pros-cons ul {
+    list-style: none;
+    padding: 0;
+  }
+  .pros-cons li {
+    padding: 0.6rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .pros-cons li:last-child { border-bottom: none; }
+  .pros-cons li::before {
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+  }
+  .pros li::before { content: "+"; color: var(--green); }
+  .cons li::before { content: "!"; color: var(--red); }
+
+  /* Footnote */
+  .footnote {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.78rem;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+  }
+
+  /* Section subtitle */
+  .section-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  /* Not captured list */
+  .nc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+  .nc-item {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    border-left: 3px solid var(--text-muted);
+  }
+  .nc-item strong {
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+  .nc-item span {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 900px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .sources { grid-template-columns: 1fr; }
+    .pros-cons { grid-template-columns: 1fr; }
+    .cards { grid-template-columns: 1fr; }
+    .cmp-row, .cmp-header { grid-template-columns: 1fr; gap: 0.3rem; }
+    .cmp-vs { display: none; }
+    .depth-grid { grid-template-columns: 100px repeat(3, 1fr); overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-label">TMO &middot; FIT Holding &middot; Validação</div>
+    <h1>Relatório de Validação Geotécnica</h1>
+    <p>API Screening (SoilGrids 250m) vs. Laudo de Campo &mdash; Residencial Água Azul</p>
+    <div class="header-meta">
+      <div class="header-meta-item"><strong>Coordenadas</strong> &nbsp;-22.2960, -53.8347</div>
+      <div class="header-meta-item"><strong>Local</strong> &nbsp;Ivinhema/MS</div>
+      <div class="header-meta-item"><strong>Empreendimento</strong> &nbsp;134 casas térreas (MCMV)</div>
+      <div class="header-meta-item"><strong>Data</strong> &nbsp;05/03/2026</div>
+    </div>
+  </div>
+
+  <!-- FONTES -->
+  <div class="section">
+    <div class="section-title">Fontes Comparadas</div>
+    <div class="sources">
+      <div class="source-box api">
+        <div class="source-label">Fonte A — API TMO (Remoto)</div>
+        <div class="source-detail">
+          <strong>SoilGrids 250m v2.0</strong> (ISRIC via Google Earth Engine)<br>
+          Pedotransfer functions: Saxton & Rawls 2006, Williams/EPIC 1995, Reichert 2009<br>
+          <strong>8 requisições</strong> realizadas (depths: 0-5, 5-15, 15-30, 0-30, 30-60, 60-100, 100-200, 0-200cm)<br>
+          Profile: <code style="color:var(--cyan);">geotechnical</code>
+        </div>
+      </div>
+      <div class="source-box laudo">
+        <div class="source-label">Fonte B — Laudo de Campo</div>
+        <div class="source-detail">
+          <strong>Laudo geotécnico profissional</strong> com ART registrada (CREA)<br>
+          SPT (2 campanhas: 2023 + 2024), Laboratório (granulometria, Atterberg, CBR, Proctor),
+          Penetrômetro manual (jul/2025), Adensamento edométrico (ago/2025), Plaxis 3D<br>
+          <strong>8 sondagens</strong>, <strong>40 pontos</strong> de penetrômetro, até <strong>18m</strong> de profundidade
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="section">
+    <div class="section-title">Resumo da Validação</div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--accent);">11</div>
+        <div class="kpi-label">Parâmetros comparados</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--green);">4</div>
+        <div class="kpi-label">Convergentes</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--yellow);">2</div>
+        <div class="kpi-label">Parciais</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--red);">5</div>
+        <div class="kpi-label">Divergentes</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--text-muted);">5</div>
+        <div class="kpi-label">Não capturados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARACAO PRINCIPAL -->
+  <div class="section">
+    <div class="section-title">1. Comparação Direta — Topsoil (0-30cm)</div>
+    <div class="section-sub">
+      A profundidade <strong>0-30cm</strong> da API é a mais comparável aos ensaios de laboratório do laudo,
+      realizados no solo superficial da terraplenagem.
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background: var(--cyan);"></div> API (SoilGrids)</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--orange);"></div> Laudo (Campo)</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--green);"></div> Convergente</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--yellow);"></div> Parcial</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--red);"></div> Divergente</div>
+    </div>
+
+    <div class="card card-full">
+      <div class="cmp-header">
+        <div>Parâmetro</div>
+        <div style="text-align:center;">API (0-30cm)</div>
+        <div style="text-align:center;">vs</div>
+        <div style="text-align:center;">Laudo (Campo)</div>
+        <div style="text-align:center;">Resultado</div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Textura / Classe</div>
+        <div class="cmp-api"><span class="val">Sandy Clay Loam</span><br><span class="unit">31.3% argila, 57.7% areia</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">Areia Siltosa</span><br><span class="unit">A-2-4 (IG=0), essencialmente arenoso</span></div>
+        <div><span class="delta delta-bad">DIVERGENTE</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Índice de Plasticidade (IP)</div>
+        <div class="cmp-api"><span class="val">14.6</span><br><span class="unit">LL=34.2, LP=19.6</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">NP (zero)</span><br><span class="unit">Não plástico — sem LL/LP</span></div>
+        <div><span class="delta delta-bad">CRÍTICO</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Permeabilidade (Ksat)</div>
+        <div class="cmp-api"><span class="val">3.72 mm/h</span><br><span class="unit">Moderately Slow</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">1.224.000 mm/h</span><br><span class="unit">k=3,4×10⁻² cm/s — Médio (Terzaghi)</span></div>
+        <div><span class="delta delta-bad">5 ORDENS</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">CBR (%)</div>
+        <div class="cmp-api"><span class="val">12.9%</span><br><span class="unit">Fair-Good</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">19.3 — 22.8%</span><br><span class="unit">Proctor Normal (laboratório)</span></div>
+        <div><span class="delta delta-warn">-33% a -43%</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Classificação USCS</div>
+        <div class="cmp-api"><span class="val">SC</span><br><span class="unit">Areia Argilosa (Clayey Sand)</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">~SM</span><br><span class="unit">Areia Siltosa (implícito por A-2-4 + NP)</span></div>
+        <div><span class="delta delta-bad">DIVERGENTE</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Expansão / Shrink-Swell</div>
+        <div class="cmp-api"><span class="val">Moderate</span><br><span class="unit">Score 3/9</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">Insignificante</span><br><span class="unit">0.11% — 0.27% (Proctor)</span></div>
+        <div><span class="delta delta-bad">DIVERGENTE</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Bulk Density (kg/dm³)</div>
+        <div class="cmp-api"><span class="val">1.31</span><br><span class="unit">SoilGrids natural</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">1.98 — 2.04</span><br><span class="unit">γd máx compactado (19.46-20.05 kN/m³)</span></div>
+        <div><span class="delta delta-warn">-34%</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Fundação rasa viável</div>
+        <div class="cmp-api"><span class="val">Sim</span><br><span class="unit">Radier, Sapata corrida, Sapata isolada</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">Sim</span><br><span class="unit">Radier recomendado (σ = 10 kPa)</span></div>
+        <div><span class="delta delta-ok">CONVERGENTE</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Risco de erosão</div>
+        <div class="cmp-api"><span class="val">Very Low</span><br><span class="unit">K-factor = 0.14</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">Desprezível</span><br><span class="unit">Gradiente crítico 79× &gt; atuante</span></div>
+        <div><span class="delta delta-ok">CONVERGENTE</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Homogeneidade</div>
+        <div class="cmp-api"><span class="val">Sim</span><br><span class="unit">Argila varia &lt;3% no perfil 0-200cm</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">Sim</span><br><span class="unit">"Homogeneidade apresentada" (SPT)</span></div>
+        <div><span class="delta delta-ok">CONVERGENTE</span></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-param">Tendência arenosa</div>
+        <div class="cmp-api"><span class="val">57.7% areia</span><br><span class="unit">Areia predominante</span></div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-laudo"><span class="val">Essencialmente arenoso</span><br><span class="unit">Granular, A-2-4</span></div>
+        <div><span class="delta delta-ok">CONVERGENTE</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFIL POR PROFUNDIDADE -->
+  <div class="section">
+    <div class="section-title">2. Perfil de Solo por Profundidade (API)</div>
+    <div class="section-sub">
+      8 requisições com <code style="color:var(--accent);">profile=geotechnical</code> e depths variados.
+      O subsoil retornado é sempre fixo em 30-100cm. As derivações geotécnicas são calculadas a partir do topsoil da profundidade solicitada.
+    </div>
+
+    <div class="card card-full" style="overflow-x:auto;">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Propriedades Primárias do Solo</div>
+          <div class="card-subtitle">Dados brutos SoilGrids por camada</div>
+        </div>
+      </div>
+      <div class="depth-grid">
+        <div class="depth-cell header">Profundidade</div>
+        <div class="depth-cell header">0-5cm</div>
+        <div class="depth-cell header">5-15cm</div>
+        <div class="depth-cell header">15-30cm</div>
+        <div class="depth-cell header highlight">0-30cm</div>
+        <div class="depth-cell header">30-60cm</div>
+        <div class="depth-cell header">60-100cm</div>
+        <div class="depth-cell header">100-200cm</div>
+
+        <div class="depth-cell label">Argila (%)</div>
+        <div class="depth-cell">30.86</div>
+        <div class="depth-cell">31.28</div>
+        <div class="depth-cell">31.46</div>
+        <div class="depth-cell highlight">31.30</div>
+        <div class="depth-cell">32.91</div>
+        <div class="depth-cell">32.33</div>
+        <div class="depth-cell">30.34</div>
+
+        <div class="depth-cell label">Areia (%)</div>
+        <div class="depth-cell">57.62</div>
+        <div class="depth-cell">57.57</div>
+        <div class="depth-cell">57.75</div>
+        <div class="depth-cell highlight">57.67</div>
+        <div class="depth-cell">56.68</div>
+        <div class="depth-cell">56.98</div>
+        <div class="depth-cell">58.27</div>
+
+        <div class="depth-cell label">Silte (%)</div>
+        <div class="depth-cell">11.52</div>
+        <div class="depth-cell">11.15</div>
+        <div class="depth-cell">10.79</div>
+        <div class="depth-cell highlight">11.03</div>
+        <div class="depth-cell">10.41</div>
+        <div class="depth-cell">10.68</div>
+        <div class="depth-cell">11.38</div>
+
+        <div class="depth-cell label">BD (kg/dm³)</div>
+        <div class="depth-cell">1.28</div>
+        <div class="depth-cell">1.31</div>
+        <div class="depth-cell">1.33</div>
+        <div class="depth-cell highlight">1.31</div>
+        <div class="depth-cell">1.33</div>
+        <div class="depth-cell">1.34</div>
+        <div class="depth-cell">1.35</div>
+
+        <div class="depth-cell label">pH</div>
+        <div class="depth-cell">5.25</div>
+        <div class="depth-cell">5.25</div>
+        <div class="depth-cell">5.24</div>
+        <div class="depth-cell highlight">5.25</div>
+        <div class="depth-cell">5.19</div>
+        <div class="depth-cell">5.21</div>
+        <div class="depth-cell">5.23</div>
+
+        <div class="depth-cell label">MO (%)</div>
+        <div class="depth-cell">4.00</div>
+        <div class="depth-cell">2.57</div>
+        <div class="depth-cell">1.59</div>
+        <div class="depth-cell highlight">2.57</div>
+        <div class="depth-cell">0.79</div>
+        <div class="depth-cell">0.52</div>
+        <div class="depth-cell">0.43</div>
+
+        <div class="depth-cell label">Textura USDA</div>
+        <div class="depth-cell" style="font-size:0.7rem;">Sandy Clay Loam</div>
+        <div class="depth-cell" style="font-size:0.7rem;">Sandy Clay Loam</div>
+        <div class="depth-cell" style="font-size:0.7rem;">Sandy Clay Loam</div>
+        <div class="depth-cell highlight" style="font-size:0.7rem;">Sandy Clay Loam</div>
+        <div class="depth-cell" style="font-size:0.7rem;">Sandy Clay Loam</div>
+        <div class="depth-cell" style="font-size:0.7rem;">Sandy Clay Loam</div>
+        <div class="depth-cell" style="font-size:0.7rem;">Sandy Clay Loam</div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.25rem;"></div>
+
+    <div class="card card-full" style="overflow-x:auto;">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Derivações Geotécnicas</div>
+          <div class="card-subtitle">Calculadas via pedotransfer functions a partir dos dados primários</div>
+        </div>
+      </div>
+      <div class="depth-grid">
+        <div class="depth-cell header">Profundidade</div>
+        <div class="depth-cell header">0-5cm</div>
+        <div class="depth-cell header">5-15cm</div>
+        <div class="depth-cell header">15-30cm</div>
+        <div class="depth-cell header highlight">0-30cm</div>
+        <div class="depth-cell header">30-60cm</div>
+        <div class="depth-cell header">60-100cm</div>
+        <div class="depth-cell header">100-200cm</div>
+
+        <div class="depth-cell label">USCS</div>
+        <div class="depth-cell">SC</div>
+        <div class="depth-cell">SC</div>
+        <div class="depth-cell">SC</div>
+        <div class="depth-cell highlight">SC</div>
+        <div class="depth-cell">SC</div>
+        <div class="depth-cell">SC</div>
+        <div class="depth-cell">SC</div>
+
+        <div class="depth-cell label">LL (est.)</div>
+        <div class="depth-cell">36.6</div>
+        <div class="depth-cell">34.2</div>
+        <div class="depth-cell">33.5</div>
+        <div class="depth-cell highlight">34.2</div>
+        <div class="depth-cell">33.2</div>
+        <div class="depth-cell">32.1</div>
+        <div class="depth-cell">30.6</div>
+
+        <div class="depth-cell label">IP (est.)</div>
+        <div class="depth-cell">15.5</div>
+        <div class="depth-cell">14.6</div>
+        <div class="depth-cell">14.4</div>
+        <div class="depth-cell highlight">14.6</div>
+        <div class="depth-cell">14.4</div>
+        <div class="depth-cell">14.0</div>
+        <div class="depth-cell">13.4</div>
+
+        <div class="depth-cell label">Ksat (mm/h)</div>
+        <div class="depth-cell">3.94</div>
+        <div class="depth-cell">3.72</div>
+        <div class="depth-cell">3.64</div>
+        <div class="depth-cell highlight">3.72</div>
+        <div class="depth-cell">2.96</div>
+        <div class="depth-cell">3.21</div>
+        <div class="depth-cell">4.23</div>
+
+        <div class="depth-cell label">CBR (%)</div>
+        <div class="depth-cell">11.0</div>
+        <div class="depth-cell">12.9</div>
+        <div class="depth-cell">13.5</div>
+        <div class="depth-cell highlight">12.9</div>
+        <div class="depth-cell">14.4</div>
+        <div class="depth-cell">15.1</div>
+        <div class="depth-cell">15.8</div>
+
+        <div class="depth-cell label">Shrink-Swell</div>
+        <div class="depth-cell" style="font-size:0.72rem;">Mod. (3)</div>
+        <div class="depth-cell" style="font-size:0.72rem;">Mod. (3)</div>
+        <div class="depth-cell" style="font-size:0.72rem;">Mod. (3)</div>
+        <div class="depth-cell highlight" style="font-size:0.72rem;">Mod. (3)</div>
+        <div class="depth-cell" style="font-size:0.72rem;">Mod. (3)</div>
+        <div class="depth-cell" style="font-size:0.72rem;">Mod. (3)</div>
+        <div class="depth-cell" style="font-size:0.72rem;">Low (2)</div>
+
+        <div class="depth-cell label">Risk Score</div>
+        <div class="depth-cell" style="color:var(--green); font-weight:700;">0</div>
+        <div class="depth-cell" style="color:var(--green); font-weight:700;">0</div>
+        <div class="depth-cell" style="color:var(--green); font-weight:700;">0</div>
+        <div class="depth-cell highlight" style="color:var(--green); font-weight:700;">0</div>
+        <div class="depth-cell" style="color:var(--green); font-weight:700;">0</div>
+        <div class="depth-cell" style="color:var(--green); font-weight:700;">0</div>
+        <div class="depth-cell" style="color:var(--green); font-weight:700;">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPT PROFILE -->
+  <div class="section">
+    <div class="section-title">3. Perfil SPT do Laudo — Cobertura vs API</div>
+    <div class="section-sub">
+      A API cobre até <strong>200cm (2m)</strong> de profundidade. O laudo investiga até <strong>18m</strong> via sondagens SPT.
+      A camada crítica (areia fofa, SPT 1-4) se estende de 0.6m a 4-8m — parcialmente fora do alcance da API.
+    </div>
+
+    <div class="cards">
+      <div class="card" style="flex:2;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Perfil SPT — 8 sondagens (média)</div>
+            <div class="card-subtitle">Nível d'água não encontrado em nenhuma sondagem</div>
+          </div>
+        </div>
+
+        <div class="spt-bar">
+          <div class="spt-depth-label">0 – 0.6m</div>
+          <div class="spt-track"><div class="spt-fill" style="width:15%; background:var(--text-muted);">—</div></div>
+          <div class="spt-class" style="color:var(--text-muted);">Aterro/Vegetal</div>
+        </div>
+        <div class="spt-bar">
+          <div class="spt-depth-label">0.6 – 4m</div>
+          <div class="spt-track"><div class="spt-fill" style="width:22%; background:var(--red);">1-4</div></div>
+          <div class="spt-class" style="color:var(--red);">Fofa</div>
+        </div>
+        <div class="spt-bar">
+          <div class="spt-depth-label">4 – 8m</div>
+          <div class="spt-track"><div class="spt-fill" style="width:22%; background:var(--orange);">1-4</div></div>
+          <div class="spt-class" style="color:var(--orange);">Fofa</div>
+        </div>
+        <div class="spt-bar">
+          <div class="spt-depth-label">8 – 12m</div>
+          <div class="spt-track"><div class="spt-fill" style="width:44%; background:var(--yellow);">5-8</div></div>
+          <div class="spt-class" style="color:var(--yellow);">Pouco compacta</div>
+        </div>
+        <div class="spt-bar">
+          <div class="spt-depth-label">12 – 18m</div>
+          <div class="spt-track"><div class="spt-fill" style="width:100%; background:var(--green);">9-18</div></div>
+          <div class="spt-class" style="color:var(--green);">Med. compacta</div>
+        </div>
+
+        <div style="margin-top:1rem; padding:0.75rem; background:var(--surface2); border-radius:8px; font-size:0.8rem; border-left:3px solid var(--accent);">
+          <strong style="color:var(--accent);">Cobertura da API: 0 – 2m</strong> — cobre apenas a camada de aterro e o início da areia fofa.
+          A camada problemática (SPT 1-4, de 0.6 a 8m) está majoritariamente fora do alcance dos dados SoilGrids.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Dados Exclusivos do Laudo</div>
+            <div class="card-subtitle">Não reproduzíveis via sensoriamento remoto</div>
+          </div>
+        </div>
+        <table>
+          <tr><td style="color:var(--text-muted);">Tensão admissível</td><td style="font-weight:600;">10 kPa</td></tr>
+          <tr><td style="color:var(--text-muted);">Recalque (analítico)</td><td style="font-weight:600;">1.2 cm</td></tr>
+          <tr><td style="color:var(--text-muted);">Recalque (Plaxis 3D)</td><td style="font-weight:600;">1.5 cm</td></tr>
+          <tr><td style="color:var(--text-muted);">Limite recalque (apólice)</td><td style="font-weight:600;">5.0 cm</td></tr>
+          <tr><td style="color:var(--text-muted);">Kv (coef. recalque)</td><td style="font-weight:600;">67 tf/m³</td></tr>
+          <tr><td style="color:var(--text-muted);">Colapso (10 kPa)</td><td style="font-weight:600;">~0.8%</td></tr>
+          <tr><td style="color:var(--text-muted);">Colapso (50-800 kPa)</td><td style="font-weight:600;">2.35 – 2.72%</td></tr>
+          <tr><td style="color:var(--text-muted);">Agressividade</td><td style="font-weight:600; color:var(--green);">Não agressivo</td></tr>
+          <tr><td style="color:var(--text-muted);">Penetrômetro (mín)</td><td style="font-weight:600;">1.04 kgf/cm²</td></tr>
+          <tr><td style="color:var(--text-muted);">Penetrômetro (máx)</td><td style="font-weight:600;">5.42 kgf/cm²</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAUSA RAIZ -->
+  <div class="section">
+    <div class="section-title">4. Diagnóstico — Cascata de Erros</div>
+    <div class="section-sub">
+      A causa-raiz é a <strong>superestimação da fração argila pelo SoilGrids</strong> nesta região do Grupo Caiuá (arenitos, MS).
+      A argila real é provavelmente caulinítica (mineral 1:1, inerte), mas as PTFs assumem argila ativa.
+    </div>
+
+    <div class="card card-full">
+      <div class="cascade">
+        <div class="cascade-root">
+          Erro Primário: SoilGrids estima 31.3% argila — Solo real é essencialmente arenoso (NP, A-2-4)
+        </div>
+        <div class="cascade-arrow">▼</div>
+        <div class="cascade-children">
+          <div class="cascade-child">
+            <div class="param">Plasticidade (IP)</div>
+            <div class="api-val">API: 14.6</div>
+            <div class="real-val">Real: NP (zero)</div>
+          </div>
+          <div class="cascade-child">
+            <div class="param">Permeabilidade</div>
+            <div class="api-val">API: 3.72 mm/h</div>
+            <div class="real-val">Real: ~1.224.000 mm/h</div>
+          </div>
+          <div class="cascade-child">
+            <div class="param">CBR</div>
+            <div class="api-val">API: 12.9%</div>
+            <div class="real-val">Real: 19.3 – 22.8%</div>
+          </div>
+          <div class="cascade-child">
+            <div class="param">USCS</div>
+            <div class="api-val">API: SC</div>
+            <div class="real-val">Real: ~SM</div>
+          </div>
+          <div class="cascade-child">
+            <div class="param">Shrink-Swell</div>
+            <div class="api-val">API: Moderate</div>
+            <div class="real-val">Real: Insignificante</div>
+          </div>
+          <div class="cascade-child">
+            <div class="param">Risk Score</div>
+            <div class="api-val">API: 0 (Low)</div>
+            <div class="real-val">Problemas reais não flagados</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem; padding:1rem; background:var(--surface2); border-radius:8px;">
+        <div style="font-weight:700; margin-bottom:0.5rem; font-size:0.85rem; color:var(--yellow);">Por que o Risk Score é 0 apesar dos problemas reais?</div>
+        <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.8;">
+          Os 8 risk flags testam limiares que não são atingidos com os dados SoilGrids:
+          Ksat &lt; 1.5 → não (3.72) &nbsp;|&nbsp;
+          K &gt; 0.35 → não (0.14) &nbsp;|&nbsp;
+          PI &gt; 25 → não (14.6) &nbsp;|&nbsp;
+          Shrink ≥ Mod-High → não (Moderate) &nbsp;|&nbsp;
+          Compaction ≥ 0.9 → não (0.80) &nbsp;|&nbsp;
+          CBR &lt; 5 → não (12.9) &nbsp;|&nbsp;
+          Impediment → não &nbsp;|&nbsp;
+          USCS problem → não (SC)<br>
+          <strong style="color:var(--text);">Os problemas reais (solo fofo SPT 1-4, colapsividade, alta permeabilidade) são intrinsecamente não-detectáveis por satélite.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARAMETROS NAO CAPTURADOS -->
+  <div class="section">
+    <div class="section-title">5. Parâmetros Não Capturados pela API</div>
+    <div class="section-sub">
+      Dados que o laudo de campo fornece e que a API não consegue derivar a partir de sensoriamento remoto.
+    </div>
+    <div class="nc-grid">
+      <div class="nc-item">
+        <strong>SPT / Resistência à Penetração</strong>
+        <span>Requer sondagem mecânica in situ. Essencial para projeto de fundações.</span>
+      </div>
+      <div class="nc-item">
+        <strong>Colapsividade</strong>
+        <span>Ensaio de adensamento edométrico com inundação. Crítico para solos porosos.</span>
+      </div>
+      <div class="nc-item">
+        <strong>Recalques</strong>
+        <span>Calculado via oedométrico ou simulação numérica (Plaxis 3D). Exigência da apólice.</span>
+      </div>
+      <div class="nc-item">
+        <strong>Agressividade ao Concreto</strong>
+        <span>Ensaio químico em laboratório. Requisito do seguro de engenharia.</span>
+      </div>
+      <div class="nc-item">
+        <strong>Nível do Lençol Freático</strong>
+        <span>Identificado nas sondagens SPT. Impacta fundações e drenagem.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VEREDITO -->
+  <div class="section">
+    <div class="section-title">6. Veredito</div>
+
+    <div class="verdict">
+      <h3>Screening Válido com Ressalvas Significativas</h3>
+      <p>
+        A API acerta a decisão de alto nível (fundação rasa viável) mas erra nos parâmetros quantitativos
+        para solos arenosos do Grupo Caiuá. O produto funciona como <strong>triagem inicial</strong> para priorizar
+        investigações de campo, mas <strong>não substitui</strong> sondagens SPT e ensaios laboratoriais conforme
+        NBR 6122:2019 e NBR 8036:1983.
+      </p>
+    </div>
+
+    <div style="margin-top: 1.5rem;"></div>
+
+    <div class="pros-cons">
+      <div class="card pros">
+        <div class="card-title" style="color: var(--green); margin-bottom: 1rem;">Convergências</div>
+        <ul>
+          <li>Fundação rasa / radier viável — decisão go/no-go correta</li>
+          <li>Risco de erosão desprezível — ambas as fontes concordam</li>
+          <li>Homogeneidade do perfil — variação &lt;3% de argila</li>
+          <li>Tendência arenosa identificada (&gt;57% areia)</li>
+        </ul>
+      </div>
+      <div class="card cons">
+        <div class="card-title" style="color: var(--red); margin-bottom: 1rem;">Divergências Críticas</div>
+        <ul>
+          <li>Plasticidade: IP=14.6 estimado vs NP real — falso positivo</li>
+          <li>Permeabilidade: erro de 5 ordens de grandeza (3.72 vs 1.224.000 mm/h)</li>
+          <li>Textura: 31% argila estimada em solo essencialmente arenoso</li>
+          <li>CBR subestimado em 33-43% (12.9 vs 19-23%)</li>
+          <li>Risk Score 0 onde há solo fofo e colapsividade real</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOMENDAÇÕES -->
+  <div class="section">
+    <div class="section-title">7. Recomendações de Evolução</div>
+
+    <div class="card card-full" style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:100px;">Prioridade</th>
+            <th>Ação</th>
+            <th>Impacto Esperado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-divergent">Alta</span></td>
+            <td>Disclaimer obrigatório no parecer: "Screening remoto — não substitui investigação geotécnica de campo (NBR 6122/8036)"</td>
+            <td>Mitigação legal e alinhamento de expectativas</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-divergent">Alta</span></td>
+            <td>Flag automático quando <code>sand_pct &gt; 50%</code> em regiões do Grupo Caiuá/Bauru (geocodificação reversa)</td>
+            <td>Alerta de baixa confiança nas derivações</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-partial">Média</span></td>
+            <td>Integrar HiHydroSoil para Ksat calibrado (Phase 2)</td>
+            <td>Corrige permeabilidade — maior divergência encontrada</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-partial">Média</span></td>
+            <td>Cruzar com mapa geológico CPRM via API para identificar formação</td>
+            <td>Contexto regional automático (Caiuá, Bauru, Basalto, etc.)</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-partial">Média</span></td>
+            <td>Campo <code>confidence_level</code> (high/medium/low) baseado na formação geológica</td>
+            <td>Transparência no nível de confiança dos dados</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-na">Baixa</span></td>
+            <td>Fator de correção regional para argila em Grupo Caiuá</td>
+            <td>Calibração local (requer mais laudos para validação)</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-na">Baixa</span></td>
+            <td>Flag "solo potencialmente colapsível" quando BD &lt; 1.4 e sand &gt; 50%</td>
+            <td>Novo risk flag capturando cenário deste laudo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footnote">
+    TMO Geotechnical Screening &middot; FIT Holding &middot; Validação realizada em 05/03/2026<br>
+    Fontes: API SoilGrids 250m v2.0 (ISRIC/GEE) &middot; Laudo geotécnico profissional com ART<br>
+    Próxima validação recomendada: comparar com laudo de região argilosa (Londrina/PR ou Ribeirão Preto/SP)
+  </div>
+
+</div>
+</body>
+</html>

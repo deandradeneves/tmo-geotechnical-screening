@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMO &middot; Documenta&ccedil;&atilde;o T&eacute;cnica &mdash; API Geot&eacute;cnica v2.0</title>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #232733;
+  --border: #2e3345;
+  --text: #e4e6ed;
+  --text-muted: #8b90a0;
+  --accent: #6c8aff;
+  --accent-dim: #4a5f99;
+  --green: #34d399;
+  --green-dim: rgba(52,211,153,0.12);
+  --yellow: #fbbf24;
+  --yellow-dim: rgba(251,191,36,0.12);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.12);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.12);
+  --cyan: #22d3ee;
+  --cyan-dim: rgba(34,211,238,0.12);
+  --purple: #a78bfa;
+  --purple-dim: rgba(167,139,250,0.12);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Layout with sidebar */
+.page-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar Nav */
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 2rem 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-brand {
+  padding: 0 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+.sidebar-brand h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.sidebar-brand p {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+.sidebar nav { padding: 0 0.75rem; }
+.sidebar nav a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+.sidebar nav a:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+.sidebar nav a .nav-num {
+  color: var(--accent-dim);
+  font-weight: 600;
+  font-size: 0.7rem;
+  min-width: 1.4rem;
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  padding: 2.5rem 3rem;
+  max-width: 960px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 2rem 0 2.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3rem;
+}
+.header-label {
+  font-size: 0.72rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+.header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.5rem;
+}
+.header p { color: var(--text-muted); font-size: 0.95rem; }
+.header .version-tag {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.25rem 0.85rem;
+  background: var(--accent-dim);
+  color: var(--text);
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Section */
+.section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+.section-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.section-subtitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 1.5rem 0 0.75rem;
+}
+
+/* Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--accent-dim); }
+.card-full { grid-column: 1 / -1; }
+.card-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; }
+.card-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+
+/* Bordered cards */
+.card-green { border-left: 3px solid var(--green); }
+.card-red { border-left: 3px solid var(--red); }
+.card-cyan { border-left: 3px solid var(--cyan); }
+.card-orange { border-left: 3px solid var(--orange); }
+.card-purple { border-left: 3px solid var(--purple); }
+.card-accent { border-left: 3px solid var(--accent); }
+.card-yellow { border-left: 3px solid var(--yellow); }
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.badge-low { background: var(--green-dim); color: var(--green); }
+.badge-moderate { background: var(--yellow-dim); color: var(--yellow); }
+.badge-high { background: var(--orange-dim); color: var(--orange); }
+.badge-critical { background: var(--red-dim); color: var(--red); }
+.badge-info { background: var(--cyan-dim); color: var(--cyan); }
+.badge-purple { background: var(--purple-dim); color: var(--purple); }
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+}
+th {
+  text-align: left;
+  padding: 0.7rem 0.5rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+tr:last-child td { border-bottom: none; }
+.highlight-row { background: rgba(108,138,255,0.06); }
+td.center, th.center { text-align: center; }
+
+/* Code blocks */
+pre {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+}
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.8rem;
+  background: var(--surface2);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  color: var(--cyan);
+}
+
+/* Lists */
+.content-list {
+  list-style: none;
+  padding: 0;
+}
+.content-list li {
+  padding: 0.4rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+.content-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.85rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.content-list.green li::before { background: var(--green); }
+.content-list.red li::before { background: var(--red); }
+
+/* Numbered list */
+.numbered-list {
+  list-style: none;
+  padding: 0;
+  counter-reset: nl;
+}
+.numbered-list li {
+  padding: 0.6rem 0 0.6rem 2.5rem;
+  position: relative;
+  font-size: 0.88rem;
+  counter-increment: nl;
+}
+.numbered-list li::before {
+  content: counter(nl);
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Architecture diagram */
+.arch-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 2rem 0;
+}
+.arch-box {
+  padding: 0.9rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid var(--border);
+  min-width: 200px;
+  position: relative;
+}
+.arch-box.http { background: var(--surface); color: var(--text-muted); }
+.arch-box.cloud { background: var(--surface2); color: var(--text); border-color: var(--accent-dim); }
+.arch-box.gee { background: var(--cyan-dim); color: var(--cyan); border-color: rgba(34,211,238,0.3); }
+.arch-box.cprm { background: var(--orange-dim); color: var(--orange); border-color: rgba(251,146,60,0.3); }
+.arch-box.geotech { background: var(--purple-dim); color: var(--purple); border-color: rgba(167,139,250,0.3); }
+.arch-box.response { background: var(--green-dim); color: var(--green); border-color: rgba(52,211,153,0.3); }
+.arch-box small { display: block; font-weight: 400; font-size: 0.72rem; opacity: 0.8; }
+
+.arch-arrow {
+  width: 2px;
+  height: 28px;
+  background: var(--border);
+  position: relative;
+}
+.arch-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: -4px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--border);
+}
+.arch-row {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+.arch-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* Complementarity layers */
+.layer-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.layer-box.layer-1 { border-left: 4px solid var(--cyan); }
+.layer-box.layer-2 { border-left: 4px solid var(--orange); }
+.layer-box.layer-3 { border-left: 4px solid var(--green); }
+.layer-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.layer-1 .layer-label { color: var(--cyan); }
+.layer-2 .layer-label { color: var(--orange); }
+.layer-3 .layer-label { color: var(--green); }
+
+/* PTF Card */
+.ptf-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.ptf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.ptf-title { font-size: 0.95rem; font-weight: 600; }
+.ptf-ref { font-size: 0.72rem; color: var(--text-muted); }
+.ptf-io {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.82rem;
+}
+.ptf-io span {
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  background: var(--surface2);
+  font-size: 0.78rem;
+}
+
+/* Comparison columns */
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Note / Info boxes */
+.note {
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 1rem 1.25rem;
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+  color: var(--text-muted);
+}
+.note strong { color: var(--text); }
+.note.warn { border-left-color: var(--yellow); }
+.note.danger { border-left-color: var(--red); }
+
+/* Blockquote / Disclaimer */
+blockquote {
+  background: var(--surface2);
+  border-left: 3px solid var(--yellow);
+  border-radius: 0 8px 8px 0;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* Formula */
+.formula {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  text-align: center;
+  margin: 1rem 0;
+  color: var(--cyan);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 2.5rem 0;
+  margin-top: 2rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+.footer p { margin: 0.25rem 0; }
+
+/* Mobile */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { padding: 1.5rem; max-width: 100%; }
+  .cards { grid-template-columns: 1fr; }
+  .comparison { grid-template-columns: 1fr; }
+  .arch-row { flex-direction: column; align-items: center; }
+}
+
+/* Print */
+@media print {
+  :root {
+    --bg: #fff;
+    --surface: #f8f8f8;
+    --surface2: #f0f0f0;
+    --border: #ddd;
+    --text: #111;
+    --text-muted: #555;
+    --accent: #2952cc;
+    --accent-dim: #c0cfff;
+  }
+  .sidebar { display: none; }
+  .main { max-width: 100%; padding: 1rem; }
+  body { background: #fff; color: #111; }
+  .card, .ptf-card, .layer-box { break-inside: avoid; }
+  .arch-box.gee, .arch-box.cprm, .arch-box.geotech, .arch-box.response {
+    background: #f0f0f0; color: #333; border-color: #ccc;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <h3>TMO &middot; FIT Holding</h3>
+    <p>Documenta&ccedil;&atilde;o T&eacute;cnica v2.0</p>
+  </div>
+  <nav>
+    <a href="#s1"><span class="nav-num">01</span> Vis&atilde;o Geral e Prop&oacute;sito</a>
+    <a href="#s2"><span class="nav-num">02</span> Arquitetura e Fontes de Dados</a>
+    <a href="#s3"><span class="nav-num">03</span> Dados Brutos &mdash; SoilGrids 250m</a>
+    <a href="#s4"><span class="nav-num">04</span> Contexto Geol&oacute;gico &mdash; SGB/CPRM</a>
+    <a href="#s5"><span class="nav-num">05</span> Corre&ccedil;&atilde;o por Mineralogia</a>
+    <a href="#s6"><span class="nav-num">06</span> Deriva&ccedil;&otilde;es Geot&eacute;cnicas (10 PTFs)</a>
+    <a href="#s7"><span class="nav-num">07</span> Risk Score e Precifica&ccedil;&atilde;o</a>
+    <a href="#s8"><span class="nav-num">08</span> Confidence Level e Disclaimer</a>
+    <a href="#s9"><span class="nav-num">09</span> Formato do Response</a>
+    <a href="#s10"><span class="nav-num">10</span> Modelo de Complementaridade</a>
+    <a href="#s11"><span class="nav-num">11</span> Limita&ccedil;&otilde;es Conhecidas</a>
+    <a href="#s12"><span class="nav-num">12</span> Valida&ccedil;&atilde;o &mdash; Caso de Estudo</a>
+    <a href="#s13"><span class="nav-num">13</span> Refer&ecirc;ncia da API</a>
+  </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="main">
+
+<!-- Header -->
+<div class="header">
+  <div class="header-label">TMO &middot; FIT Holding &middot; Documenta&ccedil;&atilde;o T&eacute;cnica</div>
+  <h1>API Geot&eacute;cnica TMO</h1>
+  <p>Screening geot&eacute;cnico remoto via SoilGrids 250m + SGB/CPRM</p>
+  <span class="version-tag">Vers&atilde;o 2.0 &middot; Com corre&ccedil;&atilde;o geol&oacute;gica &middot; 03/2026</span>
+</div>
+
+<!-- Section 1 -->
+<div id="s1" class="section">
+  <div class="section-title">1. Vis&atilde;o Geral e Prop&oacute;sito</div>
+
+  <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1.5rem;">
+    A API Geot&eacute;cnica TMO &eacute; um servi&ccedil;o de <strong style="color:var(--text)">triagem geot&eacute;cnica remota</strong> que deriva propriedades de engenharia civil a partir de dados satelitais de solo (SoilGrids 250m) e contexto geol&oacute;gico (SGB/CPRM).
+  </p>
+
+  <div class="cards">
+    <div class="card card-green">
+      <div class="card-title" style="color:var(--green);">O que a API faz</div>
+      <ul class="content-list green">
+        <li><strong>14 propriedades brutas do solo</strong> (argila, areia, silte, pH, CEC, carbono, densidade, &aacute;gua retida, etc.)</li>
+        <li><strong>Contexto geol&oacute;gico</strong> da forma&ccedil;&atilde;o rochosa sob aquele ponto (nome, litologia, era, mineralogia inferida)</li>
+        <li><strong>10 deriva&ccedil;&otilde;es geot&eacute;cnicas</strong> calculadas por fun&ccedil;&otilde;es de pedotransfer&ecirc;ncia (Ksat, erodibilidade, Atterberg, USCS, shrink-swell, compacta&ccedil;&atilde;o, CBR, funda&ccedil;&atilde;o, compara&ccedil;&atilde;o de camadas, risco)</li>
+        <li><strong>Corre&ccedil;&otilde;es por mineralogia</strong> que ajustam as deriva&ccedil;&otilde;es com base no mineral de argila dominante</li>
+        <li><strong>Score de risco</strong> (0&ndash;16) com fator de pr&ecirc;mio, flags e checklist de inspe&ccedil;&atilde;o</li>
+        <li><strong>N&iacute;vel de confian&ccedil;a</strong> (high / medium / low) e disclaimer regulat&oacute;rio (NBR 6122/8036)</li>
+      </ul>
+    </div>
+    <div class="card card-red">
+      <div class="card-title" style="color:var(--red);">O que a API N&Atilde;O faz</div>
+      <ul class="content-list red">
+        <li>N&atilde;o substitui investiga&ccedil;&atilde;o geot&eacute;cnica de campo (SPT, CPT, laborat&oacute;rio)</li>
+        <li>N&atilde;o fornece dados de resist&ecirc;ncia &agrave; penetra&ccedil;&atilde;o, n&iacute;vel d&#39;&aacute;gua, colapsividade ou agressividade qu&iacute;mica</li>
+        <li>N&atilde;o cobre profundidades maiores que 2 metros (SoilGrids vai at&eacute; 200cm; SPT vai a 18m+)</li>
+        <li>N&atilde;o fornece valores absolutos para dimensionamento de funda&ccedil;&otilde;es</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-subtitle">Papel no processo TMO</div>
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">A API opera como <strong style="color:var(--text)">primeiro passe de triagem</strong> no fluxo de underwriting do seguro quinquenal:</p>
+  <ol class="numbered-list">
+    <li><strong>Pr&eacute;-classificar</strong> o terreno antes de enviar equipe de campo</li>
+    <li><strong>Direcionar</strong> a inspe&ccedil;&atilde;o (o inspetor sabe o que esperar e o que testar)</li>
+    <li><strong>Precificar</strong> o pr&ecirc;mio inicial (ajustado posteriormente pelo laudo de campo)</li>
+    <li><strong>Documentar</strong> a base t&eacute;cnica da decis&atilde;o de underwriting</li>
+  </ol>
+</div>
+
+<!-- Section 2 -->
+<div id="s2" class="section">
+  <div class="section-title">2. Arquitetura e Fontes de Dados</div>
+
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <div class="arch-diagram">
+      <div class="arch-box http">Requisi&ccedil;&atilde;o HTTP<small>POST &middot; lat, lon, profile</small></div>
+      <div class="arch-arrow"></div>
+      <div class="arch-box cloud">Cloud Function (main.py)<small>Google Cloud Functions Gen 2</small></div>
+      <div class="arch-arrow"></div>
+      <div class="arch-row">
+        <div class="arch-branch">
+          <div class="arch-box gee">Google Earth Engine<small>SoilGrids 250m &middot; ISRIC v2.0<br>14 propriedades do solo</small></div>
+        </div>
+        <div class="arch-branch">
+          <div class="arch-box cprm">SGB/CPRM WFS<small>Litoestratigrafia 1:1.000.000<br>Forma&ccedil;&atilde;o geol&oacute;gica</small></div>
+        </div>
+      </div>
+      <div class="arch-arrow"></div>
+      <div class="arch-box geotech">geotech.py<small>10 PTFs + corre&ccedil;&atilde;o mineral&oacute;gica</small></div>
+      <div class="arch-arrow"></div>
+      <div class="arch-box response">JSON Response<small>Solo + Geologia + Deriva&ccedil;&otilde;es + Risco + Confian&ccedil;a</small></div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card card-cyan">
+      <div class="card-title">Fonte 1: SoilGrids 250m <span class="badge badge-info">ISRIC via GEE</span></div>
+      <ul class="content-list">
+        <li>Mapa global de propriedades do solo em resolu&ccedil;&atilde;o de 250m por pixel, produzido pelo ISRIC (Wageningen, Holanda)</li>
+        <li>Modelos de machine learning treinados com ~240.000 amostras de campo globais, usando 400+ covari&aacute;veis ambientais</li>
+        <li>6 camadas padr&atilde;o (0&ndash;5cm at&eacute; 100&ndash;200cm) + compostas por m&eacute;dia ponderada</li>
+        <li>Acur&aacute;cia reportada: R&sup2; de 0.3 a 0.7 &mdash; melhor em zonas temperadas; pior em tropicais</li>
+        <li><strong>Limita&ccedil;&atilde;o chave:</strong> N&atilde;o diferencia mineralogia da argila</li>
+      </ul>
+    </div>
+    <div class="card card-orange">
+      <div class="card-title">Fonte 2: SGB/CPRM <span class="badge badge-high">Litoestratigrafia</span></div>
+      <ul class="content-list">
+        <li>Mapa geol&oacute;gico do Brasil em escala 1:1.000.000, produzido pelo Servi&ccedil;o Geol&oacute;gico do Brasil</li>
+        <li>Retorna forma&ccedil;&atilde;o geol&oacute;gica, litologia dominante, era geol&oacute;gica</li>
+        <li>A forma&ccedil;&atilde;o geol&oacute;gica determina o mineral de argila dominante &rarr; corre&ccedil;&atilde;o</li>
+        <li>Servi&ccedil;o p&uacute;blico WFS, sem autentica&ccedil;&atilde;o. Sujeito a instabilidade (timeout 5s, fallback gracioso)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 3 -->
+<div id="s3" class="section">
+  <div class="section-title">3. Dados Brutos &mdash; SoilGrids 250m</div>
+
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">
+    A API consulta 14 propriedades do solo via Google Earth Engine. Para o profile <code>geotechnical</code>, consulta em duas profundidades: topsoil (0&ndash;30cm) e subsoil (30&ndash;100cm).
+  </p>
+
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <div class="card-title">Tabela de Propriedades Brutas</div>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr><th class="center">#</th><th>Campo no Response</th><th>Propriedade</th><th>Unidade</th><th class="center">Fator</th><th>O que Mede</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="center">1</td><td><code>ph</code></td><td>pH em &aacute;gua</td><td>pH</td><td class="center">/10</td><td>Acidez/alcalinidade. pH &lt; 5 = agressivo ao concreto</td></tr>
+        <tr class="highlight-row"><td class="center">2</td><td><code>clay_pct</code></td><td>Argila</td><td>%</td><td class="center">/10</td><td>Fra&ccedil;&atilde;o &lt; 0.002mm. Governa plasticidade, permeabilidade, expans&atilde;o. <strong>Dado mais cr&iacute;tico</strong></td></tr>
+        <tr><td class="center">3</td><td><code>sand_pct</code></td><td>Areia</td><td>%</td><td class="center">/10</td><td>Fra&ccedil;&atilde;o 0.05&ndash;2.0mm. Governa drenagem e capacidade de suporte</td></tr>
+        <tr><td class="center">4</td><td><code>silt_pct</code></td><td>Silte</td><td>%</td><td class="center">/10</td><td>Fra&ccedil;&atilde;o 0.002&ndash;0.05mm. Relacionado &agrave; erodibilidade</td></tr>
+        <tr><td class="center">5</td><td><code>cec_cmol_kg</code></td><td>CEC</td><td>cmol(c)/kg</td><td class="center">/10</td><td>Capacidade de troca cati&ocirc;nica. Alta = argila ativa/expansiva</td></tr>
+        <tr><td class="center">6</td><td><code>nitrogen_g_kg</code></td><td>Nitrog&ecirc;nio</td><td>g/kg</td><td class="center">/100</td><td>Indicador de mat&eacute;ria org&acirc;nica</td></tr>
+        <tr><td class="center">7</td><td><code>soc_g_kg</code></td><td>Carbono Org&acirc;nico</td><td>g/kg</td><td class="center">/10</td><td>Base para c&aacute;lculo de MO (OM = SOC &times; 1.724)</td></tr>
+        <tr><td class="center">8</td><td><code>ocd_kg_dm3</code></td><td>Dens. Carbono Org.</td><td>kg/dm&sup3;</td><td class="center">/10</td><td>Concentra&ccedil;&atilde;o volum&eacute;trica de carbono</td></tr>
+        <tr><td class="center">9</td><td><code>bulk_density_kg_dm3</code></td><td>Densidade Aparente</td><td>kg/dm&sup3;</td><td class="center">/100</td><td>Massa do solo por volume. Indica compacta&ccedil;&atilde;o</td></tr>
+        <tr><td class="center">10</td><td><code>water_10kpa_pct</code></td><td>&Aacute;gua retida 10 kPa</td><td>%</td><td class="center">&times;100</td><td>&Aacute;gua facilmente dispon&iacute;vel</td></tr>
+        <tr><td class="center">11</td><td><code>water_33kpa_pct</code></td><td>&Aacute;gua retida 33 kPa</td><td>%</td><td class="center">&times;100</td><td>Capacidade de campo (field capacity)</td></tr>
+        <tr><td class="center">12</td><td><code>water_1500kpa_pct</code></td><td>&Aacute;gua retida 1500 kPa</td><td>%</td><td class="center">&times;100</td><td>Ponto de murcha permanente</td></tr>
+        <tr><td class="center">13</td><td><code>coarse_fragments_pct</code></td><td>Fragmentos Grossos</td><td>cm&sup3;/dm&sup3;</td><td class="center">/10</td><td>Pedregulho + cascalho. Afeta USCS</td></tr>
+        <tr><td class="center">14</td><td><code>oc_stock_kg_m2</code></td><td>Estoque Carbono</td><td>kg/m&sup2;</td><td class="center">/10</td><td>Apenas camada 0&ndash;30cm</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section-subtitle">M&eacute;tricas Derivadas Agr&iacute;colas</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th>Campo</th><th>F&oacute;rmula</th><th>Significado</th></tr></thead>
+      <tbody>
+        <tr><td><code>derived.awc_pct</code></td><td>&aacute;gua_33kPa &minus; &aacute;gua_1500kPa</td><td>&Aacute;gua dispon&iacute;vel para plantas (%)</td></tr>
+        <tr><td><code>derived.awc_mm</code></td><td>awc_pct &times; profundidade_cm / 10</td><td>&Aacute;gua dispon&iacute;vel em mm (volume)</td></tr>
+        <tr><td><code>derived.texture_class</code></td><td>Tri&acirc;ngulo USDA simplificado</td><td>Classifica&ccedil;&atilde;o textural (ex: Sandy Clay Loam)</td></tr>
+        <tr><td><code>derived.organic_matter_pct</code></td><td>SOC &times; 1.724 / 10</td><td>Mat&eacute;ria org&acirc;nica (fator Van Bemmelen)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">Resolu&ccedil;&atilde;o e M&eacute;todo</div>
+  <div class="card card-accent">
+    <ul class="content-list">
+      <li><strong>Resolu&ccedil;&atilde;o espacial:</strong> 250m &times; 250m por pixel</li>
+      <li><strong>M&eacute;todo:</strong> Buffer circular de 2000m ao redor da coordenada, m&eacute;dia ponderada</li>
+      <li><strong>Proje&ccedil;&atilde;o original:</strong> Mollweide (equal-area) &rarr; reprojeta para WGS84 na consulta</li>
+      <li><strong>Profundidades compostas:</strong> M&eacute;dia ponderada pela espessura. Ex: 0&ndash;30cm = (0&ndash;5cm &times; 5/30) + (5&ndash;15cm &times; 10/30) + (15&ndash;30cm &times; 15/30)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Section 4 -->
+<div id="s4" class="section">
+  <div class="section-title">4. Contexto Geol&oacute;gico &mdash; SGB/CPRM</div>
+
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">
+    A partir da vers&atilde;o 2.0, a API consulta automaticamente o Servi&ccedil;o Geol&oacute;gico do Brasil (SGB, antigo CPRM) para obter a forma&ccedil;&atilde;o geol&oacute;gica do ponto.
+  </p>
+
+  <div class="section-subtitle">O que retorna</div>
+<pre>{
+  "geological_context": {
+    "formation": "Grupo Caiu&aacute;",
+    "formation_key": "caiua",
+    "lithology": "Arenito",
+    "geological_age": "Mesoz&oacute;ico",
+    "source": "SGB/CPRM GeoSGB (litoestratigrafia 1:1M)"
+  }
+}</pre>
+
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th>Campo</th><th>Descri&ccedil;&atilde;o</th></tr></thead>
+      <tbody>
+        <tr><td><code>formation</code></td><td>Nome oficial da forma&ccedil;&atilde;o geol&oacute;gica (como retornado pelo SGB)</td></tr>
+        <tr><td><code>formation_key</code></td><td>Chave normalizada para lookup na tabela de mineralogia interna</td></tr>
+        <tr><td><code>lithology</code></td><td>Rocha dominante (arenito, basalto, argilito, etc.)</td></tr>
+        <tr><td><code>geological_age</code></td><td>Era geol&oacute;gica (Mesozoico, Cenozoico, etc.)</td></tr>
+        <tr><td><code>source</code></td><td>Identifica&ccedil;&atilde;o da fonte e escala</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">Por que isso importa</div>
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">A forma&ccedil;&atilde;o geol&oacute;gica determina o <strong style="color:var(--text)">mineral de argila dominante</strong>, que determina o comportamento mec&acirc;nico:</p>
+
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th>Mineral</th><th>Estrutura</th><th>Comportamento</th><th>Onde ocorre</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Caulinita</strong> (1:1)</td><td>Lamelas r&iacute;gidas, sem expans&atilde;o</td><td>Inerte. Argila n&atilde;o contribui para plasticidade, expans&atilde;o ou reten&ccedil;&atilde;o</td><td>Grupo Cai&uacute;a/Bauru (MS, PR, SP), Barreiras (NE), Latossolos do Cerrado</td></tr>
+        <tr><td><strong>Montmorillonita</strong> (2:1)</td><td>Lamelas expansivas, absorve &aacute;gua</td><td>Ativa. Causa expans&atilde;o, alta plasticidade, recalques diferenciais</td><td>Guabirotuba (Curitiba), solos aluviais, vertissolos</td></tr>
+        <tr><td><strong>Mista</strong></td><td>Combina&ccedil;&atilde;o</td><td>Parcialmente ativa</td><td>Serra Geral (basalto), sedimentos marinhos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <strong>Sem essa corre&ccedil;&atilde;o, todas as PTFs erram sistematicamente.</strong> O SoilGrids reporta % de argila total sem distinguir mineralogia. 31% de caulinita se comporta como ~10% de argila ativa. 31% de montmorillonita se comporta como ~47%.
+  </div>
+
+  <div class="section-subtitle">Fallback</div>
+  <p style="font-size:0.85rem;color:var(--text-muted);">Se o SGB estiver indispon&iacute;vel (timeout 5s ou erro), a API funciona normalmente sem corre&ccedil;&atilde;o &mdash; retorna dados brutos e deriva&ccedil;&otilde;es sem ajuste, com <code>confidence_level: "low"</code>.</p>
+</div>
+
+<!-- Section 5 -->
+<div id="s5" class="section">
+  <div class="section-title">5. Corre&ccedil;&atilde;o por Mineralogia</div>
+
+  <div class="section-subtitle">Conceito: Activity Ratio</div>
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">O <code>activity_ratio</code> &eacute; um fator multiplicador que converte argila total em <strong style="color:var(--text)">argila efetiva</strong> para as PTFs:</p>
+
+  <div class="formula">argila_efetiva = argila_bruta &times; activity_ratio</div>
+
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <div class="card-title">Tabela de Activity Ratios</div>
+    <table>
+      <thead><tr><th>Mineral</th><th class="center">Activity Ratio</th><th>Efeito</th><th>Exemplo</th></tr></thead>
+      <tbody>
+        <tr><td>Caulinita pura</td><td class="center">0.30&ndash;0.40</td><td>31% &times; 0.35 = <strong>10.9%</strong> efetiva</td><td>Grupo Cai&uacute;a: arenito do Cret&aacute;ceo</td></tr>
+        <tr><td>Caulinita + &oacute;xidos</td><td class="center">0.30&ndash;0.45</td><td>Latossolos do Cerrado</td><td>Bras&iacute;lia, Goi&aacute;s</td></tr>
+        <tr><td>Mista</td><td class="center">0.55&ndash;0.85</td><td>Corre&ccedil;&atilde;o moderada</td><td>Serra Geral: basalto</td></tr>
+        <tr><td>Montmorillonita</td><td class="center">1.50</td><td>31% &times; 1.50 = <strong>46.5%</strong> efetiva &mdash; amplifica</td><td>Guabirotuba: argilito expansivo</td></tr>
+        <tr><td>Default (sem CPRM)</td><td class="center">1.00</td><td>Sem corre&ccedil;&atilde;o</td><td>Quando geol&oacute;gico indispon&iacute;vel</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">Tabela de Forma&ccedil;&otilde;es</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Forma&ccedil;&atilde;o</th><th>Regi&atilde;o</th><th>Litologia</th><th>Mineral</th><th class="center">Ratio</th></tr></thead>
+      <tbody>
+        <tr><td>Cai&uacute;a</td><td>MS, PR, SP</td><td>Arenito</td><td>Caulinita</td><td class="center">0.35</td></tr>
+        <tr><td>Santo Anast&aacute;cio</td><td>MS, PR, SP</td><td>Arenito</td><td>Caulinita</td><td class="center">0.35</td></tr>
+        <tr><td>Adamantina</td><td>SP, MS</td><td>Arenito/siltito</td><td>Caulinita</td><td class="center">0.40</td></tr>
+        <tr><td>Bauru</td><td>SP</td><td>Arenito</td><td>Caulinita</td><td class="center">0.38</td></tr>
+        <tr><td>Mar&iacute;lia</td><td>SP, MG</td><td>Arenito calc&iacute;fero</td><td>Caulinita</td><td class="center">0.40</td></tr>
+        <tr><td>Vale do Rio do Peixe</td><td>SP</td><td>Arenito</td><td>Caulinita</td><td class="center">0.35</td></tr>
+        <tr class="highlight-row"><td>Serra Geral</td><td>PR, SC, RS</td><td>Basalto</td><td>Mista</td><td class="center">0.85</td></tr>
+        <tr><td>Latossolo</td><td>Cerrado</td><td>Laterita</td><td>Caulinita+&oacute;xidos</td><td class="center">0.30</td></tr>
+        <tr class="highlight-row"><td>Guabirotuba</td><td>Curitiba</td><td>Argilito</td><td>Montmorillonita</td><td class="center">1.50</td></tr>
+        <tr><td>Botucatu</td><td>PR, SP, RS</td><td>Arenito e&oacute;lico</td><td>Caulinita</td><td class="center">0.35</td></tr>
+        <tr><td>Piramb&oacute;ia</td><td>SP, PR</td><td>Arenito fluvial</td><td>Caulinita</td><td class="center">0.38</td></tr>
+        <tr><td>Furnas</td><td>PR, GO</td><td>Arenito</td><td>Caulinita</td><td class="center">0.35</td></tr>
+        <tr><td>Ponta Grossa</td><td>PR</td><td>Folhelho/siltito</td><td>Mista</td><td class="center">0.60</td></tr>
+        <tr><td>Irati</td><td>PR, SP</td><td>Folhelho/calc&aacute;rio</td><td>Mista</td><td class="center">0.65</td></tr>
+        <tr><td>Barreiras</td><td>NE</td><td>Arenito/argilito</td><td>Caulinita</td><td class="center">0.35</td></tr>
+        <tr><td>Alter do Ch&atilde;o</td><td>AM, PA</td><td>Arenito</td><td>Caulinita</td><td class="center">0.30</td></tr>
+        <tr><td>Solim&otilde;es</td><td>AM</td><td>Argilito/siltito</td><td>Mista</td><td class="center">0.70</td></tr>
+        <tr><td>Granito</td><td>Sul, SE</td><td>Granito</td><td>Caulinita+&oacute;xidos</td><td class="center">0.45</td></tr>
+        <tr><td>Gnaisse</td><td>SE, MG</td><td>Gnaisse</td><td>Mista</td><td class="center">0.55</td></tr>
+        <tr><td>Pantanal</td><td>MS, MT</td><td>Aluvi&atilde;o</td><td>Mista</td><td class="center">0.60</td></tr>
+        <tr><td>Mangue</td><td>Litoral</td><td>Sedimento marinho</td><td>Mista</td><td class="center">0.80</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.75rem;">Refer&ecirc;ncias: Vargas (1977), Pinto (2006), Nogueira (2001) &mdash; mec&acirc;nica dos solos tropicais brasileiros.</p>
+  </div>
+
+  <div class="section-subtitle">Onde a corre&ccedil;&atilde;o &eacute; aplicada</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th>Deriva&ccedil;&atilde;o</th><th class="center">Usa argila efetiva?</th><th>Justificativa</th></tr></thead>
+      <tbody>
+        <tr><td>Ksat (Saxton &amp; Rawls)</td><td class="center"><span class="badge badge-low">SIM</span></td><td>Permeabilidade depende de argila ativa</td></tr>
+        <tr><td>Atterberg (LL, PL, PI)</td><td class="center"><span class="badge badge-low">SIM</span></td><td>Plasticidade &eacute; propriedade da argila ativa</td></tr>
+        <tr><td>USCS</td><td class="center"><span class="badge badge-low">SIM</span></td><td>Classifica&ccedil;&atilde;o depende de PI e % argila efetiva</td></tr>
+        <tr><td>Shrink-swell</td><td class="center"><span class="badge badge-low">SIM</span></td><td>Expans&atilde;o causada por argila ativa</td></tr>
+        <tr><td>Compacta&ccedil;&atilde;o</td><td class="center"><span class="badge badge-low">SIM</span></td><td>BD cr&iacute;tica depende do teor de argila funcional</td></tr>
+        <tr><td>CBR</td><td class="center"><span class="badge badge-low">SIM</span></td><td>Capacidade de suporte depende da fra&ccedil;&atilde;o ativa</td></tr>
+        <tr><td>Erodibilidade (K-factor)</td><td class="center"><span class="badge badge-critical">N&Atilde;O</span></td><td>Eros&atilde;o depende do tamanho f&iacute;sico das part&iacute;culas</td></tr>
+        <tr><td>Funda&ccedil;&atilde;o</td><td class="center"><span class="badge badge-moderate">Indireta</span></td><td>Usa USCS, shrink-swell e CBR j&aacute; corrigidos</td></tr>
+        <tr><td>Camadas</td><td class="center"><span class="badge badge-critical">N&Atilde;O</span></td><td>Compara valores brutos (detec&ccedil;&atilde;o de transi&ccedil;&atilde;o)</td></tr>
+        <tr><td>Risk Score</td><td class="center"><span class="badge badge-moderate">Indireta</span></td><td>Usa todas as deriva&ccedil;&otilde;es j&aacute; corrigidas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">O que o response retorna</div>
+<pre>{
+  "corrections_applied": {
+    "activity_ratio": 0.35,
+    "effective_clay_pct": 11.0,
+    "formation_key": "caiua",
+    "mineral": "kaolinite"
+  }
+}</pre>
+  <div class="note">
+    <strong>Importante:</strong> O campo <code>clay_pct</code> no topsoil/subsoil preserva o valor bruto original do SoilGrids. A corre&ccedil;&atilde;o s&oacute; afeta as deriva&ccedil;&otilde;es geot&eacute;cnicas. O consumidor sempre tem acesso ao dado bruto e ao dado corrigido.
+  </div>
+</div>
+
+<!-- Section 6 -->
+<div id="s6" class="section">
+  <div class="section-title">6. Deriva&ccedil;&otilde;es Geot&eacute;cnicas (10 PTFs)</div>
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.5rem;">Todas as fun&ccedil;&otilde;es s&atilde;o <strong style="color:var(--text)">pure Python</strong> (zero depend&ecirc;ncia de GEE) implementadas em <code>geotech.py</code>.</p>
+
+  <!-- 6.1 Ksat -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.1 Condutividade Hidr&aacute;ulica (Ksat)</span>
+      <span class="badge badge-info">Saxton &amp; Rawls 2006</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> areia (%), argila efetiva (%), mat&eacute;ria org&acirc;nica (%)</span><span><strong>Output:</strong> Ksat em mm/h + classe</span></div>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">Estima a condutividade hidr&aacute;ulica saturada via regress&atilde;o multivariada calibrada em ~2.500 amostras (USDA). Calcula umidade na capacidade de campo, ponto de murcha, satura&ccedil;&atilde;o, distribui&ccedil;&atilde;o de poros e Ksat = 1930 &times; (&theta;s &minus; &theta;33)^(3 &minus; &lambda;).</p>
+    <table>
+      <thead><tr><th>Classe</th><th class="center">Ksat (mm/h)</th><th>Significado para constru&ccedil;&atilde;o</th></tr></thead>
+      <tbody>
+        <tr><td>Very Rapid</td><td class="center">&gt; 150</td><td>Drenagem excessiva, eros&atilde;o interna poss&iacute;vel</td></tr>
+        <tr><td>Rapid</td><td class="center">50&ndash;150</td><td>Boa drenagem</td></tr>
+        <tr><td>Moderately Rapid</td><td class="center">15&ndash;50</td><td>Adequada</td></tr>
+        <tr><td>Moderate</td><td class="center">5&ndash;15</td><td>Aceit&aacute;vel</td></tr>
+        <tr><td>Moderately Slow</td><td class="center">1.5&ndash;5</td><td>Drenagem requerida</td></tr>
+        <tr><td>Slow</td><td class="center">0.5&ndash;1.5</td><td>Problem&aacute;tica &mdash; flag de risco</td></tr>
+        <tr><td>Very Slow</td><td class="center">&lt; 0.5</td><td>Cr&iacute;tica &mdash; imperme&aacute;vel funcional</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6.2 Erodibilidade -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.2 Erodibilidade (K-factor)</span>
+      <span class="badge badge-high">Williams/EPIC 1995</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> silte (%), argila (%), areia (%), MO (%)</span><span><strong>Output:</strong> K-factor + classe de risco</span></div>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">Estima o fator K da USLE sem necessidade de c&oacute;digos de estrutura/permeabilidade. Usa argila <strong style="color:var(--text)">bruta</strong> (eros&atilde;o depende de tamanho de part&iacute;cula, n&atilde;o mineralogia).</p>
+    <table>
+      <thead><tr><th class="center">K-factor</th><th>Risco</th><th>Significado</th></tr></thead>
+      <tbody>
+        <tr><td class="center">&gt; 0.45</td><td><span class="badge badge-critical">Very High</span></td><td>Eros&atilde;o severa sem prote&ccedil;&atilde;o</td></tr>
+        <tr><td class="center">0.35&ndash;0.45</td><td><span class="badge badge-high">High</span></td><td>Flag de risco ativado</td></tr>
+        <tr><td class="center">0.25&ndash;0.35</td><td><span class="badge badge-moderate">Moderate</span></td><td>Prote&ccedil;&atilde;o de taludes recomendada</td></tr>
+        <tr><td class="center">0.15&ndash;0.25</td><td><span class="badge badge-low">Low</span></td><td>Risco control&aacute;vel</td></tr>
+        <tr><td class="center">&lt; 0.15</td><td><span class="badge badge-low">Very Low</span></td><td>Solo resistente</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6.3 Atterberg -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.3 Limites de Atterberg</span>
+      <span class="badge badge-purple">Regress&atilde;o PTF</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> argila efetiva (%), SOC (g/kg), CEC (cmol/kg)</span><span><strong>Output:</strong> LL, PL, PI estimados</span></div>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem;">Estima os limites de consist&ecirc;ncia via regress&atilde;o linear:</p>
+<pre>LL = 0.57 &times; argila + 0.29 &times; CEC + 2.0 &times; OC% + 10
+PL = 0.35 &times; argila + 0.12 &times; CEC + 1.5 &times; OC% + 5
+PI = LL &minus; PL  (m&iacute;nimo 0)</pre>
+    <div class="note warn" style="margin-top:0.75rem;"><strong>Limita&ccedil;&atilde;o:</strong> A regress&atilde;o n&atilde;o modela o conceito de &ldquo;n&atilde;o-pl&aacute;stico&rdquo; (NP). Mesmo com argila efetiva baixa, CEC e SOC contribuem para um PI residual.</div>
+  </div>
+
+  <!-- 6.4 USCS -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.4 Classifica&ccedil;&atilde;o USCS</span>
+      <span class="badge badge-info">Aproxima&ccedil;&atilde;o ASTM D2487</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> argila efetiva (%), silte (%), areia (%), fragmentos grossos (%), PI</span><span><strong>Output:</strong> Grupo USCS + descri&ccedil;&atilde;o</span></div>
+    <table>
+      <thead><tr><th class="center">Grupo</th><th>Descri&ccedil;&atilde;o</th><th>Implica&ccedil;&atilde;o para constru&ccedil;&atilde;o</th></tr></thead>
+      <tbody>
+        <tr><td class="center">SP/GP</td><td>Areia/pedregulho mal graduado</td><td>Boa drenagem, baixa coes&atilde;o</td></tr>
+        <tr><td class="center">SM/GM</td><td>Areia/pedregulho siltoso</td><td>Equilibrado</td></tr>
+        <tr><td class="center">SC/GC</td><td>Areia/pedregulho argiloso</td><td>Pl&aacute;stico, reten&ccedil;&atilde;o de &aacute;gua</td></tr>
+        <tr><td class="center">ML</td><td>Silte</td><td>Baixa resist&ecirc;ncia, erod&iacute;vel</td></tr>
+        <tr><td class="center">CL</td><td>Argila magra</td><td>Pl&aacute;stico, retra&ccedil;&otilde;es moderadas</td></tr>
+        <tr><td class="center">CH</td><td>Argila gorda</td><td>Muito pl&aacute;stico, expansivo &mdash; <strong>flag</strong></td></tr>
+        <tr><td class="center">MH</td><td>Silte el&aacute;stico</td><td>Compress&iacute;vel &mdash; <strong>flag</strong></td></tr>
+        <tr><td class="center">OH/OL/PT</td><td>Org&acirc;nico/turfa</td><td>Inadmiss&iacute;vel para funda&ccedil;&atilde;o &mdash; <strong>flag</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6.5 Shrink-Swell -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.5 Potencial de Expans&atilde;o (Shrink-Swell)</span>
+      <span class="badge badge-moderate">Score 0&ndash;9</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> argila efetiva (%), CEC (cmol/kg), PI</span><span><strong>Output:</strong> Score (0&ndash;9) + classe</span></div>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">Sistema de pontua&ccedil;&atilde;o com 3 contribuintes (0&ndash;3 pontos cada):</p>
+    <table>
+      <thead><tr><th>Contribuinte</th><th class="center">0 pts</th><th class="center">1 pt</th><th class="center">2 pts</th><th class="center">3 pts</th></tr></thead>
+      <tbody>
+        <tr><td>Argila efetiva</td><td class="center">&lt; 25%</td><td class="center">25&ndash;40%</td><td class="center">40&ndash;60%</td><td class="center">&gt; 60%</td></tr>
+        <tr><td>CEC</td><td class="center">&lt; 10</td><td class="center">10&ndash;20</td><td class="center">20&ndash;30</td><td class="center">&gt; 30</td></tr>
+        <tr><td>PI</td><td class="center">&lt; 10</td><td class="center">10&ndash;20</td><td class="center">20&ndash;35</td><td class="center">&gt; 35</td></tr>
+      </tbody>
+    </table>
+    <table style="margin-top:0.75rem;">
+      <thead><tr><th class="center">Score</th><th>Classe</th><th>Implica&ccedil;&atilde;o</th></tr></thead>
+      <tbody>
+        <tr><td class="center">7&ndash;9</td><td><span class="badge badge-critical">High</span></td><td>Recalques diferenciais prov&aacute;veis &mdash; flag</td></tr>
+        <tr><td class="center">5&ndash;6</td><td><span class="badge badge-high">Moderate-High</span></td><td>Monitoramento sazonal necess&aacute;rio &mdash; flag</td></tr>
+        <tr><td class="center">3&ndash;4</td><td><span class="badge badge-moderate">Moderate</span></td><td>Aten&ccedil;&atilde;o recomendada</td></tr>
+        <tr><td class="center">1&ndash;2</td><td><span class="badge badge-low">Low</span></td><td>Sem preocupa&ccedil;&atilde;o</td></tr>
+        <tr><td class="center">0</td><td><span class="badge badge-low">Very Low</span></td><td>Solo inerte</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6.6 Compactação -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.6 Risco de Compacta&ccedil;&atilde;o</span>
+      <span class="badge badge-info">Reichert et al. 2009</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> densidade aparente (kg/dm&sup3;), argila efetiva (%)</span><span><strong>Output:</strong> BD cr&iacute;tica, ratio, classe</span></div>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem;">Regress&atilde;o calibrada em solos tropicais brasileiros:</p>
+    <div class="formula">BD_cr&iacute;tica = 1.86 &minus; 0.0071 &times; argila &nbsp;&nbsp;|&nbsp;&nbsp; Ratio = BD_medida / BD_cr&iacute;tica</div>
+    <table>
+      <thead><tr><th class="center">Ratio</th><th>Classe</th><th>Significado</th></tr></thead>
+      <tbody>
+        <tr><td class="center">&ge; 1.0</td><td><span class="badge badge-critical">High</span></td><td>Solo compactado &mdash; flag</td></tr>
+        <tr><td class="center">0.9&ndash;1.0</td><td><span class="badge badge-moderate">Moderate</span></td><td>Pr&oacute;ximo do limite</td></tr>
+        <tr><td class="center">0.8&ndash;0.9</td><td><span class="badge badge-low">Low</span></td><td>Aceit&aacute;vel</td></tr>
+        <tr><td class="center">&lt; 0.8</td><td><span class="badge badge-low">Very Low</span></td><td>Solo solto</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6.7 CBR -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.7 CBR Estimado</span>
+      <span class="badge badge-purple">Regress&atilde;o</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> argila efetiva (%), PI, MO (%)</span><span><strong>Output:</strong> CBR estimado + classe de subleito</span></div>
+    <div class="formula">CBR = 24.5 &minus; 0.26 &times; PI &minus; 0.15 &times; argila &minus; 1.2 &times; OM &nbsp;&nbsp;(m&iacute;n. 1.0)</div>
+    <table>
+      <thead><tr><th class="center">CBR (%)</th><th>Classe</th><th>Uso</th></tr></thead>
+      <tbody>
+        <tr><td class="center">&ge; 20</td><td><span class="badge badge-low">Good</span></td><td>Subleito para pavimento</td></tr>
+        <tr><td class="center">10&ndash;20</td><td><span class="badge badge-low">Fair-Good</span></td><td>Aceit&aacute;vel com refor&ccedil;o</td></tr>
+        <tr><td class="center">5&ndash;10</td><td><span class="badge badge-moderate">Fair</span></td><td>Requer tratamento</td></tr>
+        <tr><td class="center">3&ndash;5</td><td><span class="badge badge-high">Poor</span></td><td>Substitui&ccedil;&atilde;o de solo recomendada &mdash; flag</td></tr>
+        <tr><td class="center">&lt; 3</td><td><span class="badge badge-critical">Very Poor</span></td><td>Inadmiss&iacute;vel &mdash; flag</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6.8 Fundação -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.8 Avalia&ccedil;&atilde;o de Funda&ccedil;&atilde;o</span>
+      <span class="badge badge-info">Regras compostas</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> grupo USCS, shrink-swell, CBR, BD</span><span><strong>Output:</strong> viabilidade, tipos recomendados, cautelas</span></div>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem;">L&oacute;gica baseada em regras:</p>
+    <ul class="content-list">
+      <li><strong>Funda&ccedil;&atilde;o rasa vi&aacute;vel</strong> se: shrink-swell &le; Moderate, CBR &ge; 3, USCS n&atilde;o-org&acirc;nico, BD &ge; 1.2</li>
+      <li><strong>Tipos recomendados (rasa):</strong> Sapata corrida, Radier, Sapata isolada, Tubul&atilde;o a c&eacute;u aberto</li>
+      <li><strong>Se n&atilde;o vi&aacute;vel:</strong> Estaca cravada, Estaca h&eacute;lice cont&iacute;nua, Tubul&atilde;o, Radier estaqueado</li>
+    </ul>
+  </div>
+
+  <!-- 6.9 Camadas -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.9 Compara&ccedil;&atilde;o de Camadas</span>
+      <span class="badge badge-moderate">Topsoil vs Subsoil</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> topsoil (0&ndash;30cm), subsoil (30&ndash;100cm)</span><span><strong>Output:</strong> salto de argila, salto de BD, impedimento, notas</span></div>
+    <ul class="content-list">
+      <li>Salto de argila &gt; 15% &rarr; horizonte B textural (impedimento)</li>
+      <li>Salto de BD &gt; 0.2 kg/dm&sup3; &rarr; camada densa/compactada (impedimento)</li>
+      <li>Impedimentos &rarr; risco de len&ccedil;ol fre&aacute;tico suspenso, drenagem deficiente</li>
+    </ul>
+  </div>
+
+  <!-- 6.10 Risk Score -->
+  <div class="ptf-card">
+    <div class="ptf-header">
+      <span class="ptf-title">6.10 Score de Risco (0&ndash;16)</span>
+      <span class="badge badge-critical">8 flags &times; 2 pts</span>
+    </div>
+    <div class="ptf-io"><span><strong>Input:</strong> todos os resultados anteriores</span><span><strong>Output:</strong> score, classe, fator de pr&ecirc;mio, flags, checklist</span></div>
+    <table>
+      <thead><tr><th class="center">#</th><th>Flag</th><th>Limiar</th><th class="center">Pontos</th></tr></thead>
+      <tbody>
+        <tr><td class="center">1</td><td>Baixa permeabilidade</td><td>Ksat &lt; 1.5 mm/h</td><td class="center">2</td></tr>
+        <tr><td class="center">2</td><td>Alta erodibilidade</td><td>K &gt; 0.35</td><td class="center">2</td></tr>
+        <tr><td class="center">3</td><td>Alta plasticidade</td><td>PI &gt; 25</td><td class="center">2</td></tr>
+        <tr><td class="center">4</td><td>Expans&atilde;o</td><td>Shrink-swell Moderate-High ou High</td><td class="center">2</td></tr>
+        <tr><td class="center">5</td><td>Compacta&ccedil;&atilde;o</td><td>Ratio &ge; 0.9</td><td class="center">2</td></tr>
+        <tr><td class="center">6</td><td>Baixo CBR</td><td>CBR &lt; 5</td><td class="center">2</td></tr>
+        <tr><td class="center">7</td><td>Camada impedimento</td><td>Entre topsoil e subsoil</td><td class="center">2</td></tr>
+        <tr><td class="center">8</td><td>Grupo USCS problem&aacute;tico</td><td>CH, MH, OH, OL, PT</td><td class="center">2</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Section 7 -->
+<div id="s7" class="section">
+  <div class="section-title">7. Risk Score e Precifica&ccedil;&atilde;o</div>
+
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th class="center">Score</th><th>Classe</th><th class="center">Fator Pr&ecirc;mio</th><th>A&ccedil;&atilde;o Requerida</th></tr></thead>
+      <tbody>
+        <tr><td class="center">0&ndash;4</td><td><span class="badge badge-low">Low</span></td><td class="center">1.00 (base)</td><td>Inspe&ccedil;&atilde;o padr&atilde;o</td></tr>
+        <tr><td class="center">5&ndash;8</td><td><span class="badge badge-moderate">Moderate</span></td><td class="center">1.15 (+15%)</td><td>Inspe&ccedil;&atilde;o refor&ccedil;ada recomendada</td></tr>
+        <tr><td class="center">9&ndash;12</td><td><span class="badge badge-high">Moderate-High</span></td><td class="center">1.35 (+35%)</td><td>SPT/CPT obrigat&oacute;rio + revis&atilde;o por engenheiro geot&eacute;cnico</td></tr>
+        <tr><td class="center">13&ndash;16</td><td><span class="badge badge-critical">High</span></td><td class="center">1.60 (+60%)</td><td>Investiga&ccedil;&atilde;o geot&eacute;cnica completa obrigat&oacute;ria</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">Checklist de Inspe&ccedil;&atilde;o (exemplos)</div>
+  <ul class="content-list">
+    <li><strong>Flag &ldquo;permeabilidade&rdquo;</strong> &rarr; Verificar projeto de drenagem &mdash; solo de baixa permeabilidade</li>
+    <li><strong>Flag &ldquo;erodibilidade&rdquo;</strong> &rarr; Verificar medidas de controle de eros&atilde;o (prote&ccedil;&atilde;o de taludes, drenagem)</li>
+    <li><strong>Flag &ldquo;plasticidade&rdquo;</strong> &rarr; Confirmar limites de Atterberg com ensaio de laborat&oacute;rio</li>
+    <li><strong>Flag &ldquo;expans&atilde;o&rdquo;</strong> &rarr; Monitorar movimenta&ccedil;&atilde;o sazonal do solo &mdash; risco de solo expansivo</li>
+  </ul>
+</div>
+
+<!-- Section 8 -->
+<div id="s8" class="section">
+  <div class="section-title">8. Confidence Level e Disclaimer</div>
+
+  <div class="section-subtitle">Confidence Level</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th class="center">N&iacute;vel</th><th>Condi&ccedil;&atilde;o</th><th>Significado</th></tr></thead>
+      <tbody>
+        <tr><td class="center"><span class="badge badge-low">high</span></td><td>Geol&oacute;gico dispon&iacute;vel, ratio &ge; 0.5 ou sem corre&ccedil;&atilde;o necess&aacute;ria</td><td>Forma&ccedil;&atilde;o conhecida, deriva&ccedil;&otilde;es confi&aacute;veis para screening</td></tr>
+        <tr><td class="center"><span class="badge badge-moderate">medium</span></td><td>Geol&oacute;gico dispon&iacute;vel com ratio &lt; 0.5 (grande corre&ccedil;&atilde;o) OU indispon&iacute;vel com areia &lt; 50%</td><td>Resultado plaus&iacute;vel mas incerto &mdash; validar em campo</td></tr>
+        <tr><td class="center"><span class="badge badge-critical">low</span></td><td>Geol&oacute;gico indispon&iacute;vel E areia &gt; 50%</td><td>Alto risco de erro (areia sem contexto pode ser caulinita n&atilde;o corrigida) &mdash; campo obrigat&oacute;rio</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">Disclaimer</div>
+  <blockquote>&ldquo;Screening remoto via SoilGrids 250m. N&atilde;o substitui investiga&ccedil;&atilde;o geot&eacute;cnica de campo conforme NBR 6122:2019 e NBR 8036:1983.&rdquo;</blockquote>
+  <blockquote>Quando <code>confidence = low</code>, adiciona: &ldquo;Confian&ccedil;a reduzida para esta regi&atilde;o &mdash; recomenda-se valida&ccedil;&atilde;o de campo.&rdquo;</blockquote>
+</div>
+
+<!-- Section 9 -->
+<div id="s9" class="section">
+  <div class="section-title">9. Formato do Response</div>
+
+  <div class="section-subtitle">Response Geotechnical Completo (v2.0)</div>
+<pre>{
+  "latitude": -22.XX,
+  "longitude": -53.XX,
+  "profile": "geotechnical",
+
+  "topsoil": {
+    "depth": "0-30cm",
+    "ph": 5.25,
+    "clay_pct": 31.29,
+    "sand_pct": 57.69,
+    "silt_pct": 11.02,
+    "cec_cmol_kg": 11.71,
+    "nitrogen_g_kg": 15.84,
+    "soc_g_kg": 14.91,
+    "ocd_kg_dm3": 21.23,
+    "bulk_density_kg_dm3": 1.31,
+    "water_10kpa_pct": 33.84,
+    "water_33kpa_pct": 31.0,
+    "water_1500kpa_pct": 12.73,
+    "coarse_fragments_pct": 3.41,
+    "oc_stock_kg_m2": null,
+    "derived": {
+      "awc_pct": 18.27,
+      "awc_mm": 54.8,
+      "texture_class": "Sandy Clay Loam",
+      "organic_matter_pct": 2.57
+    }
+  },
+
+  "subsoil": {
+    "depth": "30-100cm",
+    "...": "(mesma estrutura do topsoil)"
+  },
+
+  "geotechnical": {
+    "hydraulic":        { "ksat_mm_h": 28.22, "permeability_class": "Moderately Rapid" },
+    "erodibility":      { "k_factor": 0.14, "erosion_risk": "Very Low" },
+    "classification":   { "uscs_group": "SC", "uscs_description": "Clayey Sand" },
+    "plasticity":       { "liquid_limit_est": 22.6, "plastic_limit_est": 12.5, "plasticity_index_est": 10.1 },
+    "shrink_swell":     { "class": "Low", "score": 2 },
+    "compaction":       { "bd_critical": 1.782, "compaction_ratio": 0.735, "compaction_risk": "Very Low" },
+    "bearing":          { "cbr_estimated": 17.1, "subgrade_class": "Fair-Good" },
+    "foundation":       { "shallow_ok": true, "recommended": ["Sapata corrida", "Radier", "Sapata isolada", "Tubul&atilde;o a c&eacute;u aberto"], "cautions": ["No significant concerns for screening"] },
+    "layer_comparison": { "clay_jump_pct": 1.3, "bd_jump": 0.03, "impediment_layer": false, "notes": ["No significant layer contrasts detected"] },
+    "risk_assessment":  { "risk_score": 0, "risk_class": "Low", "premium_factor": 1.0, "flags": [], "inspection_checklist": ["Standard geotechnical inspection sufficient"] },
+
+    "confidence_level": "medium",
+    "disclaimer": "Screening remoto via SoilGrids 250m...",
+
+    "corrections_applied": {
+      "activity_ratio": 0.35,
+      "effective_clay_pct": 11.0,
+      "formation_key": "caiua",
+      "mineral": "kaolinite"
+    }
+  },
+
+  "geological_context": {
+    "formation": "Grupo Caiu&aacute;",
+    "formation_key": "caiua",
+    "lithology": "Arenito",
+    "geological_age": "Mesoz&oacute;ico",
+    "source": "SGB/CPRM GeoSGB (litoestratigrafia 1:1M)"
+  },
+
+  "source": "SoilGrids 250m v2.0 (ISRIC via GEE)"
+}</pre>
+
+  <div class="section-subtitle">Hierarquia dos Campos</div>
+<pre>response
+&#9500;&#9472;&#9472; latitude, longitude, profile, source
+&#9500;&#9472;&#9472; topsoil                          &#8592; Dados brutos SoilGrids (0-30cm)
+&#9474;   &#9500;&#9472;&#9472; 14 propriedades brutas
+&#9474;   &#9492;&#9472;&#9472; derived (awc, textura, OM)
+&#9500;&#9472;&#9472; subsoil                          &#8592; Dados brutos SoilGrids (30-100cm)
+&#9474;   &#9500;&#9472;&#9472; 14 propriedades brutas
+&#9474;   &#9492;&#9472;&#9472; derived
+&#9500;&#9472;&#9472; geotechnical                     &#8592; Deriva&ccedil;&otilde;es (usa argila EFETIVA)
+&#9474;   &#9500;&#9472;&#9472; 10 sub-dicts (PTFs)
+&#9474;   &#9500;&#9472;&#9472; confidence_level
+&#9474;   &#9500;&#9472;&#9472; disclaimer
+&#9474;   &#9492;&#9472;&#9472; corrections_applied          &#8592; S&oacute; aparece quando corre&ccedil;&atilde;o foi feita
+&#9492;&#9472;&#9472; geological_context               &#8592; S&oacute; aparece quando CPRM respondeu
+    &#9500;&#9472;&#9472; formation, lithology, age
+    &#9492;&#9472;&#9472; source</pre>
+
+  <div class="note"><strong>Dados brutos = preservados. Corre&ccedil;&otilde;es = transparentes. O consumidor sempre tem acesso a ambos.</strong></div>
+</div>
+
+<!-- Section 10 -->
+<div id="s10" class="section">
+  <div class="section-title">10. Modelo de Complementaridade</div>
+
+  <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1.5rem;"><strong style="color:var(--text)">A API n&atilde;o substitui o campo. A API direciona o campo.</strong></p>
+
+  <div class="layer-box layer-1">
+    <div class="layer-label">Camada 1 &mdash; Triagem Remota (API)</div>
+    <div style="display:flex;gap:2rem;flex-wrap:wrap;font-size:0.82rem;">
+      <div><strong>Entrada:</strong> Coordenada do terreno</div>
+      <div><strong>Sa&iacute;da:</strong> Perfil de solo + geologia + deriva&ccedil;&otilde;es + risco</div>
+      <div><strong>Tempo:</strong> ~5 segundos</div>
+      <div><strong>Custo:</strong> Zero</div>
+    </div>
+    <ul class="content-list" style="margin-top:0.75rem;">
+      <li>Go / no-go inicial (risk score alto &rarr; rejeitar ou investigar)</li>
+      <li>Precifica&ccedil;&atilde;o preliminar do pr&ecirc;mio (<code>premium_factor</code>)</li>
+      <li>Tipo de inspe&ccedil;&atilde;o necess&aacute;ria (padr&atilde;o vs refor&ccedil;ada vs completa)</li>
+      <li>Equipamento que o inspetor deve levar</li>
+      <li>O que o inspetor deve testar prioritariamente</li>
+    </ul>
+  </div>
+
+  <div class="layer-box layer-2">
+    <div class="layer-label">Camada 2 &mdash; Inspe&ccedil;&atilde;o Dirigida (Campo)</div>
+    <div style="display:flex;gap:2rem;flex-wrap:wrap;font-size:0.82rem;">
+      <div><strong>Entrada:</strong> Relat&oacute;rio da Camada 1 + terreno f&iacute;sico</div>
+      <div><strong>Sa&iacute;da:</strong> Laudo geot&eacute;cnico (SPT, lab, penetr&ocirc;metro)</div>
+      <div><strong>Tempo:</strong> 1&ndash;4 semanas</div>
+      <div><strong>Custo:</strong> R$ 5.000&ndash;50.000</div>
+    </div>
+    <ul class="content-list" style="margin-top:0.75rem;">
+      <li>Inspetor chega <strong>preparado</strong> (sabe a forma&ccedil;&atilde;o, litologia, mineral)</li>
+      <li>Sabe <strong>o que validar</strong> (flags + checklist espec&iacute;fico)</li>
+      <li>Sabe <strong>o que n&atilde;o testar</strong> (sem flag &rarr; simplifica)</li>
+      <li>Foco em par&acirc;metros que a API n&atilde;o mede (SPT, NA, colapso)</li>
+    </ul>
+  </div>
+
+  <div class="layer-box layer-3">
+    <div class="layer-label">Camada 3 &mdash; Laudo Final (Decis&atilde;o)</div>
+    <div style="display:flex;gap:2rem;flex-wrap:wrap;font-size:0.82rem;">
+      <div><strong>Entrada:</strong> Camada 1 + Camada 2</div>
+      <div><strong>Sa&iacute;da:</strong> Aprova&ccedil;&atilde;o/rejei&ccedil;&atilde;o do seguro + pr&ecirc;mio definitivo</div>
+      <div><strong>Respons&aacute;vel:</strong> Engenheiro geot&eacute;cnico (CREA)</div>
+    </div>
+    <ul class="content-list" style="margin-top:0.75rem;">
+      <li>Dados remotos (contexto, tend&ecirc;ncia, screening)</li>
+      <li>Dados de campo (SPT, lab, oed&ocirc;metro)</li>
+      <li>Experi&ecirc;ncia do engenheiro</li>
+      <li>Conformidade regulat&oacute;ria (NBR 6122, NBR 8036)</li>
+    </ul>
+  </div>
+
+  <div class="section-subtitle">Cen&aacute;rio A (sem API) vs Cen&aacute;rio B (com API)</div>
+  <div class="comparison">
+    <div class="card card-red">
+      <div class="card-title" style="color:var(--red);">Cen&aacute;rio A &mdash; SEM API</div>
+      <ol class="numbered-list">
+        <li>Recebe endere&ccedil;o do terreno</li>
+        <li>Envia equipe de campo <strong>sem informa&ccedil;&atilde;o pr&eacute;via</strong></li>
+        <li>Inspetor faz investiga&ccedil;&atilde;o gen&eacute;rica (SPT padr&atilde;o)</li>
+        <li>Laborat&oacute;rio analisa tudo</li>
+        <li>Engenheiro elabora laudo</li>
+        <li>Underwriting analisa e precifica</li>
+      </ol>
+      <p style="font-size:0.8rem;color:var(--red);margin-top:0.75rem;"><strong>Problemas:</strong> Inspe&ccedil;&atilde;o gen&eacute;rica, sem prioriza&ccedil;&atilde;o, custo uniforme, inspetor sem contexto.</p>
+    </div>
+    <div class="card card-green">
+      <div class="card-title" style="color:var(--green);">Cen&aacute;rio B &mdash; COM API</div>
+      <ol class="numbered-list">
+        <li>Recebe endere&ccedil;o do terreno</li>
+        <li><strong>API retorna em 5s:</strong> forma&ccedil;&atilde;o, mineral, risco, confian&ccedil;a</li>
+        <li>Underwriting faz <strong>pr&eacute;-aprova&ccedil;&atilde;o condicional</strong></li>
+        <li>Envia inspetor com <strong>briefing dirigido</strong></li>
+        <li>Inspe&ccedil;&atilde;o <strong>focada</strong> (mais r&aacute;pida, mais barata)</li>
+        <li>Laudo final ajusta pr&ecirc;mio se necess&aacute;rio</li>
+      </ol>
+      <p style="font-size:0.8rem;color:var(--green);margin-top:0.75rem;"><strong>Ganhos:</strong> Inspetor preparado, escopo reduzido, custo menor, decis&atilde;o mais r&aacute;pida.</p>
+    </div>
+  </div>
+
+  <div class="section-subtitle">O que cada campo da API serve</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th>Campo</th><th>Quem usa</th><th>Para qu&ecirc;</th></tr></thead>
+      <tbody>
+        <tr><td><code>risk_score</code> / <code>risk_class</code></td><td>Underwriting autom&aacute;tico</td><td>Pr&eacute;-aprova&ccedil;&atilde;o, precifica&ccedil;&atilde;o inicial, go/no-go</td></tr>
+        <tr><td><code>premium_factor</code></td><td>Atu&aacute;ria</td><td>Fator multiplicador do pr&ecirc;mio base</td></tr>
+        <tr><td><code>inspection_checklist</code></td><td>Inspetor de campo</td><td>Lista do que testar &mdash; escopo da inspe&ccedil;&atilde;o</td></tr>
+        <tr><td><code>flags</code></td><td>Engenheiro geot&eacute;cnico</td><td>Par&acirc;metros a validar prioritariamente</td></tr>
+        <tr><td><code>geological_context</code></td><td>Inspetor + engenheiro</td><td>Contexto (forma&ccedil;&atilde;o, rocha, mineral)</td></tr>
+        <tr><td><code>corrections_applied</code></td><td>Engenheiro</td><td>Transpar&ecirc;ncia: qual corre&ccedil;&atilde;o e por qu&ecirc;</td></tr>
+        <tr><td><code>confidence_level</code></td><td>Underwriting</td><td>N&iacute;vel de exig&ecirc;ncia da inspe&ccedil;&atilde;o</td></tr>
+        <tr><td><code>disclaimer</code></td><td>Jur&iacute;dico</td><td>Cobertura regulat&oacute;ria</td></tr>
+        <tr><td><code>foundation.recommended</code></td><td>Engenheiro</td><td>Pr&eacute;-sele&ccedil;&atilde;o de solu&ccedil;&atilde;o estrutural</td></tr>
+        <tr><td><code>topsoil</code> / <code>subsoil</code></td><td>Engenheiro</td><td>Dados brutos para compara&ccedil;&atilde;o com lab</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">Confidence como regulador de profundidade</div>
+  <div class="card card-full">
+    <table>
+      <thead><tr><th class="center">Confidence</th><th>Risk Score Baixo (0&ndash;4)</th><th>Risk Score Alto (9+)</th></tr></thead>
+      <tbody>
+        <tr><td class="center"><span class="badge badge-low">high</span></td><td>Inspe&ccedil;&atilde;o simplificada (penetr&ocirc;metro + visual)</td><td>Inspe&ccedil;&atilde;o completa (SPT + lab)</td></tr>
+        <tr><td class="center"><span class="badge badge-moderate">medium</span></td><td>Inspe&ccedil;&atilde;o padr&atilde;o (SPT + lab b&aacute;sico)</td><td>Inspe&ccedil;&atilde;o completa + especialista</td></tr>
+        <tr><td class="center"><span class="badge badge-critical">low</span></td><td>Inspe&ccedil;&atilde;o completa obrigat&oacute;ria</td><td>Rejei&ccedil;&atilde;o ou inspe&ccedil;&atilde;o extensiva</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Section 11 -->
+<div id="s11" class="section">
+  <div class="section-title">11. Limita&ccedil;&otilde;es Conhecidas</div>
+
+  <div class="cards">
+    <div class="card card-cyan">
+      <div class="card-title" style="color:var(--cyan);">Do SoilGrids (dados brutos)</div>
+      <ul class="content-list">
+        <li>N&atilde;o diferencia mineralogia (corrigido parcialmente pela integra&ccedil;&atilde;o CPRM)</li>
+        <li>Resolu&ccedil;&atilde;o 250m &mdash; pode misturar solos de unidades diferentes num mesmo pixel</li>
+        <li>Profundidade m&aacute;xima 200cm &mdash; insuficiente para perfil de funda&ccedil;&atilde;o (SPT alcan&ccedil;a 18m+)</li>
+        <li>Sem dados mec&acirc;nicos (SPT, CPT, n&iacute;vel d&#39;&aacute;gua, colapsividade, agressividade)</li>
+        <li>Acur&aacute;cia vari&aacute;vel &mdash; pior em tropicais intemperizados</li>
+      </ul>
+    </div>
+    <div class="card card-purple">
+      <div class="card-title" style="color:var(--purple);">Das PTFs (deriva&ccedil;&otilde;es)</div>
+      <ul class="content-list">
+        <li>Atterberg n&atilde;o modela NP &mdash; CEC e SOC inflam PI mesmo com argila efetiva baixa</li>
+        <li>Saxton-Rawls: otimizado para solos com finos; subestima Ksat em areias limpas</li>
+        <li>CBR regress&atilde;o: subestima para areias com BD real elevado (aterro compactado)</li>
+        <li>USCS aproximado &mdash; sem ensaio de granulometria completa</li>
+      </ul>
+    </div>
+    <div class="card card-orange">
+      <div class="card-title" style="color:var(--orange);">Da integra&ccedil;&atilde;o CPRM</div>
+      <ul class="content-list">
+        <li>Servi&ccedil;o p&uacute;blico inst&aacute;vel &mdash; timeout poss&iacute;vel (fallback sem corre&ccedil;&atilde;o)</li>
+        <li>Escala 1:1M &mdash; transi&ccedil;&otilde;es geol&oacute;gicas &lt; 1km podem n&atilde;o ser representadas</li>
+        <li>Tabela com ~25 forma&ccedil;&otilde;es; n&atilde;o mapeadas usam ratio 1.0</li>
+      </ul>
+    </div>
+    <div class="card card-red">
+      <div class="card-title" style="color:var(--red);">Estruturais (nunca vai medir)</div>
+      <ul class="content-list">
+        <li>Resist&ecirc;ncia &agrave; penetra&ccedil;&atilde;o (SPT/CPT) &mdash; requer ensaio de campo</li>
+        <li>N&iacute;vel d&#39;&aacute;gua &mdash; requer sondagem</li>
+        <li>Colapsividade &mdash; requer oed&ocirc;metro com inunda&ccedil;&atilde;o</li>
+        <li>Agressividade ao concreto &mdash; requer an&aacute;lise qu&iacute;mica</li>
+        <li>Recalques &mdash; requer modelagem com dados de campo</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 12 -->
+<div id="s12" class="section">
+  <div class="section-title">12. Valida&ccedil;&atilde;o &mdash; Caso de Estudo</div>
+
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">Valida&ccedil;&atilde;o realizada em 03/2026 com laudo geot&eacute;cnico de empreendimento residencial no interior do MS.</p>
+
+  <div class="section-subtitle">Compara&ccedil;&atilde;o: v1 (sem CPRM) &rarr; v2 (com CPRM) &rarr; Laudo Real</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Par&acirc;metro</th><th class="center">API v1 (sem CPRM)</th><th class="center">API v2 (com CPRM)</th><th class="center">Laudo Real</th></tr></thead>
+      <tbody>
+        <tr><td>Argila input PTFs</td><td class="center">31.29%</td><td class="center" style="color:var(--green)">11.0% (efetiva)</td><td class="center">~10%</td></tr>
+        <tr><td>PI</td><td class="center">14.6</td><td class="center" style="color:var(--green)">10.1</td><td class="center">0 (NP)</td></tr>
+        <tr><td>USCS</td><td class="center">SC</td><td class="center">SC</td><td class="center">SM / A-2-4</td></tr>
+        <tr><td>Ksat (mm/h)</td><td class="center">3.72</td><td class="center" style="color:var(--green)">28.22</td><td class="center">~1.200.000</td></tr>
+        <tr><td>Shrink-swell</td><td class="center" style="color:var(--yellow)">Moderate (3)</td><td class="center" style="color:var(--green)">Low (2)</td><td class="center">Very Low</td></tr>
+        <tr><td>CBR (%)</td><td class="center">12.9</td><td class="center" style="color:var(--green)">17.1</td><td class="center">19&ndash;23</td></tr>
+        <tr><td>Funda&ccedil;&atilde;o rasa</td><td class="center">Sim</td><td class="center">Sim</td><td class="center">Sim (radier)</td></tr>
+        <tr><td>Contexto geol&oacute;gico</td><td class="center" style="color:var(--text-muted)">N/A</td><td class="center">Grupo Cai&uacute;a</td><td class="center">Cai&uacute;a</td></tr>
+        <tr><td>Confidence</td><td class="center" style="color:var(--text-muted)">N/A</td><td class="center">medium</td><td class="center">&mdash;</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section-subtitle">Ganhos quantificados</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th>M&eacute;trica</th><th>Redu&ccedil;&atilde;o de erro</th></tr></thead>
+      <tbody>
+        <tr><td>PI (dist&acirc;ncia ao real)</td><td>14.6 &rarr; 10.1 = <strong style="color:var(--green)">&minus;31%</strong></td></tr>
+        <tr><td>CBR (dist&acirc;ncia ao real)</td><td>12.1 &rarr; 7.9 = <strong style="color:var(--green)">&minus;35%</strong></td></tr>
+        <tr><td>Shrink-swell</td><td>Falso alerta <strong style="color:var(--green)">eliminado</strong></td></tr>
+        <tr><td>Ksat</td><td>7.6x mais pr&oacute;ximo (direcional)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">Limita&ccedil;&otilde;es remanescentes</div>
+  <ul class="content-list">
+    <li>USCS permanece SC (PI &gt; 7 impede SM) &mdash; gargalo da PTF Atterberg</li>
+    <li>Ksat subestimado por 4 ordens de grandeza &mdash; Saxton-Rawls n&atilde;o modela areia limpa</li>
+    <li>PI n&atilde;o chega a NP &mdash; CEC/SOC inflam</li>
+  </ul>
+
+  <p style="font-size:0.82rem;color:var(--text-muted);margin-top:1rem;">Relat&oacute;rio completo de valida&ccedil;&atilde;o: <a href="resultados/validacao_v2.html" style="color:var(--accent);text-decoration:none;">resultados/validacao_v2.html</a></p>
+</div>
+
+<!-- Section 13 -->
+<div id="s13" class="section">
+  <div class="section-title">13. Refer&ecirc;ncia da API</div>
+
+  <div class="section-subtitle">Endpoint</div>
+<pre>POST [endpoint privado &mdash; solicitar acesso]
+Content-Type: application/json</pre>
+
+  <div class="section-subtitle">Par&acirc;metros</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th>Par&acirc;metro</th><th class="center">Tipo</th><th class="center">Obrigat&oacute;rio</th><th class="center">Default</th><th>Descri&ccedil;&atilde;o</th></tr></thead>
+      <tbody>
+        <tr><td><code>lat</code></td><td class="center">float</td><td class="center">Sim</td><td class="center">&mdash;</td><td>Latitude (&minus;35 a 6)</td></tr>
+        <tr><td><code>lon</code></td><td class="center">float</td><td class="center">Sim</td><td class="center">&mdash;</td><td>Longitude (&minus;75 a &minus;34)</td></tr>
+        <tr><td><code>depth</code></td><td class="center">string</td><td class="center">N&atilde;o</td><td class="center">0-30cm</td><td>Profundidade (0-5cm, 5-15cm, 15-30cm, 30-60cm, 60-100cm, 100-200cm, ou compostas)</td></tr>
+        <tr><td><code>profile</code></td><td class="center">string</td><td class="center">N&atilde;o</td><td class="center">agricultural</td><td><code>agricultural</code>, <code>geotechnical</code> ou <code>full</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">C&oacute;digos de Retorno</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th class="center">HTTP</th><th>Causa</th></tr></thead>
+      <tbody>
+        <tr><td class="center"><span class="badge badge-low">200</span></td><td>Sucesso</td></tr>
+        <tr><td class="center"><span class="badge badge-moderate">400</span></td><td>Par&acirc;metro inv&aacute;lido (lat/lon ausentes, profile inv&aacute;lido, fora do Brasil)</td></tr>
+        <tr><td class="center"><span class="badge badge-critical">500</span></td><td>Erro interno (GEE indispon&iacute;vel, etc.)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">Lat&ecirc;ncia</div>
+  <div class="card card-full" style="margin-bottom:1.5rem;">
+    <table>
+      <thead><tr><th>Cen&aacute;rio</th><th class="center">Tempo</th></tr></thead>
+      <tbody>
+        <tr><td>Warm (inst&acirc;ncia ativa)</td><td class="center">2&ndash;5s</td></tr>
+        <tr><td>Cold start</td><td class="center">5&ndash;12s</td></tr>
+        <tr><td>CPRM indispon&iacute;vel</td><td class="center">+0s (timeout 5s n&atilde;o bloqueia &mdash; fallback)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-subtitle">Infraestrutura</div>
+  <div class="card card-full">
+    <table>
+      <thead><tr><th>Componente</th><th>Valor</th></tr></thead>
+      <tbody>
+        <tr><td>Plataforma</td><td>Google Cloud Functions (Gen 2)</td></tr>
+        <tr><td>Runtime</td><td>Python 3.12</td></tr>
+        <tr><td>Mem&oacute;ria</td><td>512 MB</td></tr>
+        <tr><td>Timeout</td><td>60s</td></tr>
+        <tr><td>Regi&atilde;o</td><td>us-central1</td></tr>
+        <tr><td>Autentica&ccedil;&atilde;o</td><td>Solicitar acesso</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p><strong>TMO Geotechnical Screening</strong> &middot; FIT Holding &middot; Documenta&ccedil;&atilde;o T&eacute;cnica v2.0</p>
+  <p>Refer&ecirc;ncias: Saxton &amp; Rawls (2006), Williams (1995), Reichert (2009), Vargas (1977), Pinto (2006), Nogueira (2001)</p>
+</div>
+
+</main>
+</div>
+
+</body>
+</html>

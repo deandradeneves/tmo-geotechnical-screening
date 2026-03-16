@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMO — Validacao v2.0 (Correcao CPRM)</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e4e6ed;
+    --text-muted: #8b90a0;
+    --accent: #6c8aff;
+    --accent-dim: #4a5f99;
+    --green: #34d399;
+    --green-dim: rgba(52,211,153,0.12);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.12);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.12);
+    --orange: #fb923c;
+    --orange-dim: rgba(251,146,60,0.12);
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34,211,238,0.12);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+
+  .container { max-width: 1280px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .header-label {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+  .header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+  .header .subtitle {
+    color: var(--purple);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  .header-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .header-meta-item {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .header-meta-item strong {
+    color: var(--text);
+  }
+
+  /* Section */
+  .section { margin-bottom: 3rem; }
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* KPI row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.25rem;
+  }
+  .kpi-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .kpi-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+  .kpi-target {
+    font-size: 0.65rem;
+    color: var(--accent);
+    margin-top: 0.15rem;
+    font-style: italic;
+  }
+
+  /* Cards grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .cards-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent-dim); }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .card-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .card-full { grid-column: 1 / -1; }
+  .card-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+  .card-body {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .card-body strong { color: var(--text); }
+  .card-body code {
+    background: var(--surface2);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    color: var(--purple);
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-convergent { background: var(--green-dim); color: var(--green); }
+  .badge-divergent { background: var(--red-dim); color: var(--red); }
+  .badge-partial { background: var(--yellow-dim); color: var(--yellow); }
+  .badge-na { background: var(--surface2); color: var(--text-muted); }
+  .badge-api { background: var(--cyan-dim); color: var(--cyan); }
+  .badge-api-v2 { background: var(--purple-dim); color: var(--purple); }
+  .badge-laudo { background: var(--orange-dim); color: var(--orange); }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  th {
+    text-align: left;
+    padding: 0.75rem 0.5rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+  }
+  tr:last-child td { border-bottom: none; }
+  .highlight-row { background: rgba(108,138,255,0.06); }
+
+  /* 3-way comparison */
+  .cmp3-header {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1fr 140px;
+    gap: 0.75rem;
+    padding: 0.5rem 0 0.75rem;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .cmp3-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1fr 140px;
+    gap: 0.75rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    align-items: center;
+  }
+  .cmp3-row:last-child { border-bottom: none; }
+  .cmp3-param {
+    font-weight: 600;
+    font-size: 0.82rem;
+  }
+  .cmp3-v1 {
+    background: var(--cyan-dim);
+    border-radius: 8px;
+    padding: 0.5rem 0.65rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .cmp3-v2 {
+    background: var(--purple-dim);
+    border-radius: 8px;
+    padding: 0.5rem 0.65rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .cmp3-real {
+    background: var(--orange-dim);
+    border-radius: 8px;
+    padding: 0.5rem 0.65rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .cmp3-v1 .val { font-weight: 700; color: var(--cyan); }
+  .cmp3-v2 .val { font-weight: 700; color: var(--purple); }
+  .cmp3-real .val { font-weight: 700; color: var(--orange); }
+  .cmp3-v1 .unit, .cmp3-v2 .unit, .cmp3-real .unit { font-size: 0.72rem; color: var(--text-muted); }
+
+  /* Delta indicator */
+  .delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+  }
+  .delta-ok { background: var(--green-dim); color: var(--green); }
+  .delta-warn { background: var(--yellow-dim); color: var(--yellow); }
+  .delta-bad { background: var(--red-dim); color: var(--red); }
+  .delta-new { background: var(--purple-dim); color: var(--purple); }
+
+  /* Layer visualization */
+  .layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 1rem 0;
+  }
+  .layer-box {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    align-items: center;
+    gap: 1rem;
+  }
+  .layer-box:first-child { border-radius: 12px 12px 0 0; }
+  .layer-box:last-child { border-radius: 0 0 12px 12px; }
+  .layer-box + .layer-box { border-top: none; }
+  .layer-label {
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  .layer-data {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .layer-data strong { color: var(--text); }
+  .layer-use {
+    font-size: 0.78rem;
+    text-align: right;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+  }
+  .layer-arrow {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    padding: 0.1rem 0;
+  }
+
+  /* Geological context card */
+  .geo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--purple);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .geo-json {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+  .geo-json .key { color: var(--cyan); }
+  .geo-json .str { color: var(--green); }
+  .geo-chain {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 1rem;
+    font-size: 0.82rem;
+  }
+  .geo-chain-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+    font-weight: 600;
+  }
+  .geo-chain-arrow {
+    color: var(--purple);
+    font-weight: 700;
+  }
+
+  /* Verdict */
+  .verdict {
+    background: var(--surface);
+    border: 2px solid var(--yellow);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+  }
+  .verdict h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+    color: var(--yellow);
+  }
+  .verdict p {
+    color: var(--text-muted);
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Pros/Cons */
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .pros-cons ul {
+    list-style: none;
+    padding: 0;
+  }
+  .pros-cons li {
+    padding: 0.6rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .pros-cons li:last-child { border-bottom: none; }
+  .pros-cons li::before {
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+  }
+  .pros li::before { content: "+"; color: var(--green); }
+  .cons li::before { content: "!"; color: var(--red); }
+
+  /* NC Grid */
+  .nc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+  .nc-item {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    border-left: 3px solid var(--text-muted);
+  }
+  .nc-item strong {
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+  .nc-item span {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.78rem;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+  }
+
+  /* Section subtitle */
+  .section-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  /* Footnote */
+  .footnote {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  /* Roadmap table */
+  .roadmap-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--purple-dim);
+    color: var(--purple);
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-right: 0.25rem;
+  }
+
+  @media (max-width: 900px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .pros-cons { grid-template-columns: 1fr; }
+    .cards { grid-template-columns: 1fr; }
+    .cmp3-row, .cmp3-header { grid-template-columns: 1fr; gap: 0.3rem; }
+    .layer-box { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-label">TMO &middot; FIT Holding &middot; Validacao v2.0</div>
+    <h1>Relatorio de Validacao &mdash; API v2.0</h1>
+    <div class="subtitle">Correcao Geologica CPRM</div>
+    <p>Comparacao 3 vias: API v1.0 &times; API v2.0 &times; Laudo de Campo</p>
+    <div class="header-meta">
+      <div class="header-meta-item"><strong>Coordenadas</strong> &nbsp;-22.XX, -53.XX (MS)</div>
+      <div class="header-meta-item"><strong>Data</strong> &nbsp;03/2026</div>
+      <div class="header-meta-item"><strong>Modelo</strong> &nbsp;3 camadas (superficie + fundacao + profundo)</div>
+      <div class="header-meta-item"><strong>Local</strong> &nbsp;Interior do MS</div>
+    </div>
+  </div>
+
+  <!-- 1. O QUE MUDOU NA v2.0 -->
+  <div class="section">
+    <div class="section-title">1. O Que Mudou na v2.0</div>
+    <div class="section-sub">Quatro evolucoes estruturais na API de screening geotecnico.</div>
+
+    <div class="cards" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span class="card-number" style="background:var(--purple-dim); color:var(--purple);">1</span> Contexto Geologico</div>
+          </div>
+          <span class="badge badge-api-v2">Novo</span>
+        </div>
+        <div class="card-body">
+          Integracao <strong>SGB/CPRM WFS</strong> (litoestratigrafia 1:1M). A API agora detecta automaticamente a formacao geologica do ponto e mapeia: <strong>formacao &rarr; mineral &rarr; activity_ratio</strong>.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span class="card-number" style="background:var(--purple-dim); color:var(--purple);">2</span> Correcao Mineralogica</div>
+          </div>
+          <span class="badge badge-api-v2">Core</span>
+        </div>
+        <div class="card-body">
+          <code>effective_clay = clay &times; activity_ratio</code><br>
+          Caulinita: <strong>32.6% &times; 0.35 = 11.4%</strong> efetiva. Todas as PTFs agora recebem a argila corrigida como input.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span class="card-number" style="background:var(--purple-dim); color:var(--purple);">3</span> 3 Camadas</div>
+          </div>
+          <span class="badge badge-api-v2">Novo</span>
+        </div>
+        <div class="card-body">
+          <strong>Superficie</strong> (0-30cm) para erodibilidade, <strong>Fundacao</strong> (30-100cm) para PTFs geotecnicas, <strong>Profundo</strong> (100-200cm) para tendencia e deteccao de impedimento.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span class="card-number" style="background:var(--purple-dim); color:var(--purple);">4</span> Confidence Level</div>
+          </div>
+          <span class="badge badge-api-v2">Novo</span>
+        </div>
+        <div class="card-body">
+          Indicador <strong>high / medium / low</strong> baseado em disponibilidade geologica e magnitude da correcao aplicada. Transparencia total no grau de certeza do screening.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. KPIs DE MELHORIA -->
+  <div class="section">
+    <div class="section-title">2. KPIs de Melhoria</div>
+    <div class="kpi-row">
+      <div class="kpi" style="border-top: 3px solid var(--green);">
+        <div class="kpi-value" style="color: var(--green);">11.4%</div>
+        <div class="kpi-label">Argila Efetiva</div>
+        <div class="kpi-sub">32.6% &rarr; 11.4%</div>
+        <div class="kpi-target">target ~10%</div>
+      </div>
+      <div class="kpi" style="border-top: 3px solid var(--yellow);">
+        <div class="kpi-value" style="color: var(--yellow);">-35%</div>
+        <div class="kpi-label">IP (Indice Plasticidade)</div>
+        <div class="kpi-sub">14.6 &rarr; 9.5</div>
+        <div class="kpi-target">target NP=0</div>
+      </div>
+      <div class="kpi" style="border-top: 3px solid var(--green);">
+        <div class="kpi-value" style="color: var(--green);">+49%</div>
+        <div class="kpi-label">CBR</div>
+        <div class="kpi-sub">12.9% &rarr; 19.2%</div>
+        <div class="kpi-target">target 19-23% &mdash; IN RANGE</div>
+      </div>
+      <div class="kpi" style="border-top: 3px solid var(--cyan);">
+        <div class="kpi-value" style="color: var(--cyan);">7.1&times;</div>
+        <div class="kpi-label">Ksat</div>
+        <div class="kpi-sub">3.72 &rarr; 26.57 mm/h</div>
+        <div class="kpi-target">target ~1.2M</div>
+      </div>
+      <div class="kpi" style="border-top: 3px solid var(--green);">
+        <div class="kpi-value" style="color: var(--green);">Low</div>
+        <div class="kpi-label">Shrink-Swell</div>
+        <div class="kpi-sub">Moderate(3) &rarr; Low(1)</div>
+        <div class="kpi-target">falso alarme eliminado</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. COMPARACAO 3 VIAS -->
+  <div class="section">
+    <div class="section-title">3. Comparacao 3 Vias</div>
+    <div class="section-sub">
+      Cada parametro comparado entre a API original (v1.0), a API corrigida (v2.0 com CPRM) e o laudo real de campo.
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background: var(--cyan);"></div> API v1.0</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--purple);"></div> API v2.0 (CPRM)</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--orange);"></div> Laudo Real</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--green);"></div> Convergente</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--yellow);"></div> Parcial</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--red);"></div> Persiste</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--purple);"></div> Novo v2</div>
+    </div>
+
+    <div class="card card-full">
+      <div class="cmp3-header">
+        <div>Parametro</div>
+        <div style="text-align:center; color:var(--cyan);">API v1.0</div>
+        <div style="text-align:center; color:var(--purple);">API v2.0</div>
+        <div style="text-align:center; color:var(--orange);">Laudo Real</div>
+        <div style="text-align:center;">Veredito</div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">Argila input PTFs</div>
+        <div class="cmp3-v1"><span class="val">31.29%</span><br><span class="unit">argila bruta SoilGrids</span></div>
+        <div class="cmp3-v2"><span class="val">11.4%</span><br><span class="unit">efetiva (corrigida)</span></div>
+        <div class="cmp3-real"><span class="val">~10%</span><br><span class="unit">A-2-4, essenc. arenoso</span></div>
+        <div><span class="delta delta-ok">v2 CONVERGENTE</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">IP (Indice Plasticidade)</div>
+        <div class="cmp3-v1"><span class="val">14.6</span><br><span class="unit">LL=34.2, LP=19.6</span></div>
+        <div class="cmp3-v2"><span class="val">9.5</span><br><span class="unit">LL=22.6, LP=12.5</span></div>
+        <div class="cmp3-real"><span class="val">0 (NP)</span><br><span class="unit">Nao plastico</span></div>
+        <div><span class="delta delta-warn">v2 -35% erro</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">USCS</div>
+        <div class="cmp3-v1"><span class="val">SC</span><br><span class="unit">Areia Argilosa</span></div>
+        <div class="cmp3-v2"><span class="val">SC</span><br><span class="unit">Areia Argilosa</span></div>
+        <div class="cmp3-real"><span class="val">SM</span><br><span class="unit">A-2-4, Areia Siltosa</span></div>
+        <div><span class="delta delta-bad">PERSISTE</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">Ksat (mm/h)</div>
+        <div class="cmp3-v1"><span class="val">3.72</span><br><span class="unit">Moderately Slow</span></div>
+        <div class="cmp3-v2"><span class="val">26.57</span><br><span class="unit">Moderately Rapid</span></div>
+        <div class="cmp3-real"><span class="val">~1.224.000</span><br><span class="unit">k=3,4&times;10&sup2; cm/s</span></div>
+        <div><span class="delta delta-warn">v2 7&times; MELHOR</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">CBR (%)</div>
+        <div class="cmp3-v1"><span class="val">12.9%</span><br><span class="unit">Fair-Good</span></div>
+        <div class="cmp3-v2"><span class="val">19.2%</span><br><span class="unit">Fair-Good</span></div>
+        <div class="cmp3-real"><span class="val">19.3 &mdash; 22.8%</span><br><span class="unit">Proctor Normal</span></div>
+        <div><span class="delta delta-ok">v2 CONVERGENTE</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">Shrink-Swell</div>
+        <div class="cmp3-v1"><span class="val">Moderate</span><br><span class="unit">Score 3/9</span></div>
+        <div class="cmp3-v2"><span class="val">Low</span><br><span class="unit">Score 1/9</span></div>
+        <div class="cmp3-real"><span class="val">Insignificante</span><br><span class="unit">0.11 &mdash; 0.27%</span></div>
+        <div><span class="delta delta-ok">v2 CORRETO</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">BD (kg/dm&sup3;)</div>
+        <div class="cmp3-v1"><span class="val">1.31</span><br><span class="unit">SoilGrids natural</span></div>
+        <div class="cmp3-v2"><span class="val">1.34</span><br><span class="unit">fundacao (30-100cm)</span></div>
+        <div class="cmp3-real"><span class="val">1.98 &mdash; 2.04</span><br><span class="unit">&gamma;d compactado</span></div>
+        <div><span class="delta delta-bad">PERSISTE</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">Fundacao rasa</div>
+        <div class="cmp3-v1"><span class="val">Sim</span><br><span class="unit">Radier, Sapata</span></div>
+        <div class="cmp3-v2"><span class="val">Sim</span><br><span class="unit">Radier, Sapata</span></div>
+        <div class="cmp3-real"><span class="val">Sim</span><br><span class="unit">Radier (&sigma; = 10 kPa)</span></div>
+        <div><span class="delta delta-ok">CONVERGENTE</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">Erosao</div>
+        <div class="cmp3-v1"><span class="val">Very Low</span><br><span class="unit">K-factor = 0.14</span></div>
+        <div class="cmp3-v2"><span class="val">Very Low</span><br><span class="unit">K-factor = 0.14</span></div>
+        <div class="cmp3-real"><span class="val">Desprezivel</span><br><span class="unit">Grad. critico 79&times;</span></div>
+        <div><span class="delta delta-ok">CONVERGENTE</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">Homogeneidade</div>
+        <div class="cmp3-v1"><span class="val">clay &Delta;&lt;3%</span><br><span class="unit">perfil 0-200cm</span></div>
+        <div class="cmp3-v2"><span class="val">clay &Delta;&lt;3%</span><br><span class="unit">3 camadas</span></div>
+        <div class="cmp3-real"><span class="val">Sim</span><br><span class="unit">SPT uniforme</span></div>
+        <div><span class="delta delta-ok">CONVERGENTE</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">Contexto geologico</div>
+        <div class="cmp3-v1"><span class="val">N/A</span><br><span class="unit">nao disponivel</span></div>
+        <div class="cmp3-v2"><span class="val">Grupo Caiua</span><br><span class="unit">Arenito, Mesozoico</span></div>
+        <div class="cmp3-real"><span class="val">Grupo Caiua</span><br><span class="unit">Formacao regional</span></div>
+        <div><span class="delta delta-new">v2 NOVO</span></div>
+      </div>
+
+      <div class="cmp3-row">
+        <div class="cmp3-param">Confidence</div>
+        <div class="cmp3-v1"><span class="val">N/A</span><br><span class="unit">nao disponivel</span></div>
+        <div class="cmp3-v2"><span class="val">medium</span><br><span class="unit">geologica + correcao</span></div>
+        <div class="cmp3-real"><span class="val">&mdash;</span><br><span class="unit">&mdash;</span></div>
+        <div><span class="delta delta-new">v2 NOVO</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. MODELO 3 CAMADAS -->
+  <div class="section">
+    <div class="section-title">4. Modelo 3 Camadas (API v2.0)</div>
+    <div class="section-sub">
+      Cada camada alimenta derivacoes diferentes. A <strong>fundacao (30-100cm)</strong> e a camada principal para PTFs geotecnicas,
+      com argila corrigida pelo activity_ratio da formacao detectada.
+    </div>
+
+    <div class="card card-full">
+      <div class="layer-stack">
+        <div class="layer-box" style="background: rgba(34,211,238,0.06); border-color: var(--cyan);">
+          <div>
+            <div class="layer-label" style="color: var(--cyan);">Superficie</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">0 &mdash; 30cm</div>
+          </div>
+          <div class="layer-data">
+            clay <strong>31.29%</strong> &nbsp;&middot;&nbsp; sand <strong>57.69%</strong> &nbsp;&middot;&nbsp; silt <strong>11.03%</strong> &nbsp;&middot;&nbsp; BD <strong>1.31</strong> kg/dm&sup3;
+          </div>
+          <div class="layer-use" style="background: var(--cyan-dim); color: var(--cyan);">
+            Erodibilidade<br>K-factor
+          </div>
+        </div>
+
+        <div class="layer-box" style="background: rgba(167,139,250,0.08); border-color: var(--purple);">
+          <div>
+            <div class="layer-label" style="color: var(--purple);">Fundacao</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">30 &mdash; 100cm</div>
+          </div>
+          <div class="layer-data">
+            clay <strong>32.57%</strong> &nbsp;&middot;&nbsp; sand <strong>56.88%</strong> &nbsp;&middot;&nbsp; silt <strong>10.55%</strong> &nbsp;&middot;&nbsp; BD <strong>1.34</strong> kg/dm&sup3;<br>
+            <span style="color:var(--purple); font-weight:600;">efetiva: 32.57% &times; 0.35 = 11.4%</span>
+          </div>
+          <div class="layer-use" style="background: var(--purple-dim); color: var(--purple);">
+            Todas as PTFs<br>Atterberg, CBR, Ksat, USCS
+          </div>
+        </div>
+
+        <div class="layer-box" style="background: rgba(139,144,160,0.06); border-color: var(--text-muted);">
+          <div>
+            <div class="layer-label" style="color: var(--text-muted);">Profundo</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">100 &mdash; 200cm</div>
+          </div>
+          <div class="layer-data">
+            clay <strong>30.33%</strong> &nbsp;&middot;&nbsp; sand <strong>58.30%</strong> &nbsp;&middot;&nbsp; silt <strong>11.38%</strong> &nbsp;&middot;&nbsp; BD <strong>1.35</strong> kg/dm&sup3;
+          </div>
+          <div class="layer-use" style="background: var(--surface2); color: var(--text-muted);">
+            Tendencia<br>Deteccao impedimento
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem; padding:0.75rem 1rem; background:var(--surface2); border-radius:8px; font-size:0.8rem; border-left:3px solid var(--purple);">
+        <strong style="color:var(--purple);">Separacao de responsabilidade:</strong> Erodibilidade usa a superficie (onde a chuva incide). PTFs geotecnicas usam a fundacao (onde a estrutura apoia). Camada profunda detecta variacoes bruscas (impedimento).
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. CONTEXTO GEOLOGICO -->
+  <div class="section">
+    <div class="section-title">5. Contexto Geologico Detectado</div>
+    <div class="section-sub">
+      A v2.0 consulta automaticamente o SGB/CPRM via WFS para obter a formacao geologica do ponto.
+    </div>
+
+    <div class="geo-card">
+      <div class="card-title" style="margin-bottom: 0.75rem;">Resposta CPRM (litoestratigrafia 1:1M)</div>
+      <div class="geo-json">
+        {<br>
+        &nbsp;&nbsp;<span class="key">"formation"</span>: <span class="str">"Grupo Caiua"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"lithology"</span>: <span class="str">"Arenito"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"geological_age"</span>: <span class="str">"Mesozoico"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"source"</span>: <span class="str">"SGB/CPRM GeoSGB (litoestratigrafia 1:1M)"</span><br>
+        }
+      </div>
+
+      <div class="geo-chain">
+        <div class="geo-chain-item" style="border-color:var(--cyan);">formation_key: <strong style="color:var(--cyan);">"caiua"</strong></div>
+        <div class="geo-chain-arrow">&rarr;</div>
+        <div class="geo-chain-item" style="border-color:var(--green);">mineral: <strong style="color:var(--green);">kaolinite</strong></div>
+        <div class="geo-chain-arrow">&rarr;</div>
+        <div class="geo-chain-item" style="border-color:var(--yellow);">activity_ratio: <strong style="color:var(--yellow);">0.35</strong></div>
+        <div class="geo-chain-arrow">&rarr;</div>
+        <div class="geo-chain-item" style="border-color:var(--purple);">effective_clay: <strong style="color:var(--purple);">32.57% &times; 0.35 = 11.4%</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. GANHOS QUANTIFICADOS -->
+  <div class="section">
+    <div class="section-title">6. Ganhos Quantificados</div>
+    <div class="section-sub">
+      Distancia de cada metrica ao valor real do laudo, antes e depois da correcao CPRM.
+    </div>
+
+    <div class="card card-full" style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Metrica</th>
+            <th style="text-align:center; color:var(--cyan);">v1.0</th>
+            <th style="text-align:center; color:var(--purple);">v2.0</th>
+            <th style="text-align:center; color:var(--orange);">Real</th>
+            <th style="text-align:center;">Melhoria</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dist. Argila ao real</td>
+            <td style="text-align:center;">21.3 pp</td>
+            <td style="text-align:center; color:var(--purple); font-weight:600;">1.4 pp</td>
+            <td style="text-align:center;">0</td>
+            <td style="text-align:center;"><span class="badge badge-convergent">-93%</span></td>
+          </tr>
+          <tr>
+            <td>Dist. PI ao real</td>
+            <td style="text-align:center;">14.6</td>
+            <td style="text-align:center; color:var(--purple); font-weight:600;">9.5</td>
+            <td style="text-align:center;">0</td>
+            <td style="text-align:center;"><span class="badge badge-partial">-35%</span></td>
+          </tr>
+          <tr>
+            <td>Dist. CBR ao real</td>
+            <td style="text-align:center;">6 &mdash; 10 pp</td>
+            <td style="text-align:center; color:var(--purple); font-weight:600;">0 &mdash; 4 pp</td>
+            <td style="text-align:center;">0</td>
+            <td style="text-align:center;"><span class="badge badge-convergent">-60%</span></td>
+          </tr>
+          <tr>
+            <td>Shrink-swell</td>
+            <td style="text-align:center; color:var(--red);">Falso alerta</td>
+            <td style="text-align:center; color:var(--green); font-weight:600;">Correto</td>
+            <td style="text-align:center;">&mdash;</td>
+            <td style="text-align:center;"><span class="badge badge-convergent">Eliminado</span></td>
+          </tr>
+          <tr>
+            <td>Ksat (ordem grandeza)</td>
+            <td style="text-align:center;">5.5 OG erro</td>
+            <td style="text-align:center; color:var(--purple); font-weight:600;">4.7 OG erro</td>
+            <td style="text-align:center;">0</td>
+            <td style="text-align:center;"><span class="badge badge-partial">-0.8 OG</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 7. LIMITACOES REMANESCENTES -->
+  <div class="section">
+    <div class="section-title">7. Limitacoes Remanescentes</div>
+    <div class="section-sub">
+      Problemas identificados na v1.0 que <strong>persistem</strong> na v2.0 e requerem evolucoes futuras.
+    </div>
+
+    <div class="nc-grid">
+      <div class="nc-item" style="border-left-color: var(--red);">
+        <strong>USCS permanece SC</strong>
+        <span>PI > 7 impede classificacao SM. Gargalo: PTF Atterberg nao modela NP. CEC/SOC inflam PI residual.</span>
+      </div>
+      <div class="nc-item" style="border-left-color: var(--red);">
+        <strong>Ksat subestimado</strong>
+        <span>Saxton-Rawls nao modela areia limpa. Erro 4+ ordens de grandeza persiste mesmo apos correcao.</span>
+      </div>
+      <div class="nc-item" style="border-left-color: var(--yellow);">
+        <strong>BD natural vs compactado</strong>
+        <span>SoilGrids mede BD in-situ (1.34). Laudo mede &gamma;d compactado (1.98-2.04). Sao grandezas diferentes.</span>
+      </div>
+      <div class="nc-item" style="border-left-color: var(--yellow);">
+        <strong>SPT nao capturavel</strong>
+        <span>API cobre 0-2m. Camada fofa real vai de 0.6 a 8m. Fora do alcance do SoilGrids 250m.</span>
+      </div>
+      <div class="nc-item" style="border-left-color: var(--yellow);">
+        <strong>Colapsividade</strong>
+        <span>Nao detectavel por sensoriamento remoto. Requer oedometro com inundacao em laboratorio.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. ROADMAP PHASE 2 -->
+  <div class="section">
+    <div class="section-title">8. Roadmap Phase 2</div>
+    <div class="section-sub">
+      Proximas evolucoes priorizadas para resolver as limitacoes remanescentes.
+    </div>
+
+    <div class="card card-full" style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:50px;">#</th>
+            <th>Evolucao</th>
+            <th>Impacto Esperado</th>
+            <th style="width:110px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="roadmap-num">1</span></td>
+            <td><strong>PI clamp:</strong> kaolinite + sand &gt; 55% &rarr; PI = 0</td>
+            <td>Corrigiria USCS de SC para SM &mdash; elimina ultima divergencia de classificacao</td>
+            <td><span class="badge badge-divergent">Prioritario</span></td>
+          </tr>
+          <tr>
+            <td><span class="roadmap-num">2</span></td>
+            <td><strong>Hazen/Kozeny Ksat</strong> para areias limpas</td>
+            <td>Modelo especifico para formacoes areniticas &mdash; corrige erro de 4 OG</td>
+            <td><span class="badge badge-divergent">Prioritario</span></td>
+          </tr>
+          <tr>
+            <td><span class="roadmap-num">3</span></td>
+            <td><strong>CEC effective:</strong> apply activity_ratio a CEC antes da PTF Atterberg</td>
+            <td>Reduz PI residual &mdash; complementa PI clamp</td>
+            <td><span class="badge badge-partial">Planejado</span></td>
+          </tr>
+          <tr>
+            <td><span class="roadmap-num">4</span></td>
+            <td><strong>HiHydroSoil</strong> integracao (Ksat medido)</td>
+            <td>Ksat calibrado por satelite &mdash; substitui Saxton-Rawls</td>
+            <td><span class="badge badge-partial">Planejado</span></td>
+          </tr>
+          <tr>
+            <td><span class="roadmap-num">5</span></td>
+            <td><strong>SRTM slope/aspect</strong></td>
+            <td>Avaliacao de drenagem e exposicao &mdash; complemento a erodibilidade</td>
+            <td><span class="badge badge-na">Futuro</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 9. VEREDITO -->
+  <div class="section">
+    <div class="section-title">9. Veredito</div>
+
+    <div class="verdict">
+      <h3>v2.0 &mdash; Melhoria Significativa, Screening Validado como Triagem</h3>
+      <p>
+        A correcao geologica CPRM eliminou falsos alarmes (shrink-swell), aproximou CBR ao range real,
+        e reduziu <strong>93% do erro</strong> na argila input das PTFs. A API funciona como <strong>triagem remota</strong>
+        para direcionar inspecoes de campo. Nao substitui investigacao geotecnica (NBR 6122/8036).
+      </p>
+    </div>
+
+    <div style="margin-top: 1.5rem;"></div>
+
+    <div class="pros-cons">
+      <div class="card pros">
+        <div class="card-title" style="color: var(--green); margin-bottom: 1rem;">Ganhos da v2.0</div>
+        <ul>
+          <li>CBR agora dentro do range real (19.2 vs 19-23%)</li>
+          <li>Shrink-swell corrigido (falso alarme eliminado)</li>
+          <li>Argila efetiva 93% mais proxima do real</li>
+          <li>Contexto geologico automatico (formacao, mineral)</li>
+          <li>Confidence level sinaliza incerteza</li>
+          <li>3 camadas separa PTFs (fundacao) de erosao (superficie)</li>
+        </ul>
+      </div>
+      <div class="card cons">
+        <div class="card-title" style="color: var(--red); margin-bottom: 1rem;">Limitacoes que Persistem</div>
+        <ul>
+          <li>USCS SC vs SM &mdash; PI ainda nao chega a NP</li>
+          <li>Ksat 4 OG abaixo &mdash; Saxton-Rawls nao modela areia limpa</li>
+          <li>BD diferentes (natural vs compactado)</li>
+          <li>SPT, colapsividade, recalques: nao capturaveis por satelite</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footnote">
+    TMO Geotechnical Screening &middot; FIT Holding &middot; API v2.0 (CPRM correction)<br>
+    Fontes: SoilGrids 250m v2.0 (ISRIC/GEE) &middot; SGB/CPRM litoestratigrafia 1:1M &middot; Laudo geotecnico com ART<br>
+    Relatorio gerado em 03/2026
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMO — Screening Geotecnico | Rua Dona Zaida, 91 - Porto Alegre/RS</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e4e6ed;
+    --text-muted: #8b90a0;
+    --accent: #6c8aff;
+    --accent-dim: #4a5f99;
+    --green: #34d399;
+    --green-dim: rgba(52,211,153,0.12);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.12);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.12);
+    --orange: #fb923c;
+    --orange-dim: rgba(251,146,60,0.12);
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34,211,238,0.12);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* Layout with sidebar */
+  .page-wrapper {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar Nav */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 2rem 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+  }
+  .sidebar-brand {
+    padding: 0 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .sidebar-brand h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .sidebar-brand p {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+  .sidebar nav { padding: 0 0.75rem; }
+  .sidebar nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.73rem;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+  .sidebar nav a:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+  .sidebar nav a .nav-num {
+    color: var(--accent-dim);
+    font-weight: 600;
+    font-size: 0.68rem;
+    min-width: 1.2rem;
+  }
+  .sidebar .nav-divider {
+    margin: 0.75rem 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    font-weight: 600;
+  }
+
+  /* Main content */
+  .main {
+    flex: 1;
+    margin-left: 240px;
+    padding: 2rem 3rem;
+    max-width: calc(1280px + 240px);
+  }
+
+  .container { max-width: 1280px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .header-label {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+  .header p { color: var(--text-muted); font-size: 1rem; }
+  .header .subtitle {
+    color: var(--purple);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  .header-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .header-meta-item { font-size: 0.8rem; color: var(--text-muted); }
+  .header-meta-item strong { color: var(--text); }
+
+  /* Section */
+  .section { margin-bottom: 3rem; }
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-subtitle {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  /* KPI row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .kpi-row-4 { grid-template-columns: repeat(4, 1fr); }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.25rem;
+  }
+  .kpi-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .kpi-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  /* Cards grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .cards-2 { grid-template-columns: repeat(2, 1fr); }
+  .cards-3 { grid-template-columns: repeat(3, 1fr); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent-dim); }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .card-title { font-size: 1rem; font-weight: 600; }
+  .card-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+  .card-full { grid-column: 1 / -1; }
+  .card-body {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .card-body strong { color: var(--text); }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-low { background: var(--green-dim); color: var(--green); }
+  .badge-moderate { background: var(--yellow-dim); color: var(--yellow); }
+  .badge-high { background: var(--orange-dim); color: var(--orange); }
+  .badge-critical { background: var(--red-dim); color: var(--red); }
+  .badge-info { background: var(--cyan-dim); color: var(--cyan); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-ok { background: var(--green-dim); color: var(--green); }
+  .badge-warn { background: var(--yellow-dim); color: var(--yellow); }
+  .badge-na { background: var(--surface2); color: var(--text-muted); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .stats-1 { grid-template-columns: 1fr; }
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+  }
+  .stat-label { color: var(--text-muted); }
+  .stat-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th {
+    text-align: left;
+    padding: 0.75rem 0.5rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+  }
+  tr:last-child td { border-bottom: none; }
+  .highlight-row { background: rgba(108,138,255,0.06); }
+
+  /* Bar chart */
+  .bar-container { display: flex; align-items: center; gap: 0.75rem; margin: 0.5rem 0; }
+  .bar-label { width: 120px; font-size: 0.8rem; color: var(--text-muted); text-align: right; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 24px; background: var(--surface2); border-radius: 6px; overflow: hidden; }
+  .bar-fill {
+    height: 100%; border-radius: 6px;
+    display: flex; align-items: center; padding-left: 8px;
+    font-size: 0.7rem; font-weight: 600; color: var(--bg); min-width: 40px;
+  }
+  .bar-value { width: 50px; text-align: right; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+
+  /* Layer boxes */
+  .layer-box {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid;
+  }
+  .layer-surface { border-color: var(--cyan); }
+  .layer-foundation { border-color: var(--orange); }
+  .layer-deep { border-color: var(--green); }
+  .layer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .layer-title { font-weight: 600; font-size: 0.95rem; }
+  .layer-depth { font-size: 0.75rem; color: var(--text-muted); }
+
+  /* Risk gauge */
+  .risk-gauge {
+    background: var(--surface);
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .risk-gauge h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+  .risk-gauge .score { font-size: 3rem; font-weight: 800; margin: 0.5rem 0; }
+  .risk-gauge p { color: var(--text-muted); font-size: 0.9rem; }
+
+  /* Flag list */
+  .flag-list { list-style: none; padding: 0; }
+  .flag-list li {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .flag-list li:last-child { border-bottom: none; }
+  .flag-icon { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
+  .flag-pass { background: var(--green-dim); color: var(--green); }
+  .flag-fail { background: var(--red-dim); color: var(--red); }
+
+  /* Verdict */
+  .verdict {
+    background: var(--surface);
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+  .verdict h3 { font-size: 1.4rem; margin-bottom: 0.75rem; color: var(--green); }
+  .verdict p { color: var(--text-muted); max-width: 700px; margin: 0 auto; line-height: 1.7; }
+
+  /* Note box */
+  .note {
+    background: var(--surface);
+    border-left: 4px solid var(--yellow);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .note strong { color: var(--yellow); }
+
+  /* Warning box (disclaimer prominent) */
+  .warning-box {
+    background: rgba(248,113,113,0.06);
+    border: 2px solid var(--red);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .warning-box .warning-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .warning-box p {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  .disclaimer {
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* Section divider */
+  .section-divider {
+    text-align: center;
+    margin: 3rem 0;
+    padding: 1.5rem 0;
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+  .section-divider h2 {
+    font-size: 0.85rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    font-weight: 600;
+  }
+
+  /* Collapsible details */
+  details {
+    margin-bottom: 3rem;
+  }
+  details summary {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before {
+    content: "\25B6";
+    font-size: 0.65rem;
+    color: var(--accent-dim);
+    transition: transform 0.2s;
+  }
+  details[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 3rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  /* Print */
+  @media print {
+    body { background: #fff; color: #111; }
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1rem; max-width: 100%; }
+    .container { max-width: 100%; }
+    .card, .kpi, .layer-box, .risk-gauge, .verdict, .note, .disclaimer, .warning-box { border-color: #ccc; background: #fafafa; }
+    .header-label, .section-title, .badge { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .kpi-value, .stat-value { color: #111; }
+    .stat-label, .card-body, .header p, .kpi-label, .kpi-sub { color: #555; }
+    .section-title { color: #2563eb; }
+    .risk-gauge, .verdict, .kpi-row, .card { page-break-inside: avoid; }
+    .kpi { page-break-inside: avoid; }
+    .layer-box { page-break-inside: avoid; }
+    .warning-box { page-break-inside: avoid; }
+    details { page-break-inside: avoid; }
+    details[open] > * { page-break-inside: avoid; }
+    @page { margin: 1.5cm; }
+    .page-wrapper::before {
+      content: "TMO Geotechnical Screening — Rua Dona Zaida, 91 — 16/03/2026";
+      display: block;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #999;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1.5rem; }
+    .kpi-row, .kpi-row-4 { grid-template-columns: repeat(2, 1fr); }
+    .cards-2, .cards-3 { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .header-meta { flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h3>TMO Screening</h3>
+      <p>Rua Dona Zaida, 91 — POA</p>
+    </div>
+    <nav>
+      <a href="#disclaimer"><span class="nav-num">!</span> Aviso Importante</a>
+      <a href="#resumo"><span class="nav-num">1</span> Resumo Executivo</a>
+      <a href="#risco"><span class="nav-num">2</span> Avaliacao de Risco</a>
+      <a href="#fundacao"><span class="nav-num">3</span> Fundacao e Investigacao</a>
+      <a href="#ambiental"><span class="nav-num">4</span> Risco Ambiental</a>
+      <div class="nav-divider">Detalhamento Tecnico</div>
+      <a href="#geologia"><span class="nav-num">5</span> Contexto Geologico</a>
+      <a href="#perfil"><span class="nav-num">6</span> Perfil do Solo</a>
+      <a href="#geotecnia"><span class="nav-num">7</span> Prop. Geotecnicas</a>
+      <a href="#drenagem"><span class="nav-num">8</span> Drenagem</a>
+      <a href="#literatura"><span class="nav-num">9</span> Literatura e Correcao</a>
+      <a href="#fontes"><span class="nav-num">10</span> Fontes</a>
+    </nav>
+  </aside>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <div class="main">
+  <div class="container">
+
+  <!-- ========== HEADER ========== -->
+  <div class="header" id="header">
+    <div class="header-label">TMO Geotechnical Screening</div>
+    <h1>Relatorio de Screening Geotecnico</h1>
+    <p>Rua Dona Zaida, 91 — Santa Tereza, Porto Alegre/RS</p>
+    <div class="subtitle">Seguro Quinquenal — Analise Preliminar de Solo</div>
+    <div class="header-meta">
+      <div class="header-meta-item"><strong>Coordenadas:</strong> -30.0753, -51.2310</div>
+      <div class="header-meta-item"><strong>CEP:</strong> 90840-070</div>
+      <div class="header-meta-item"><strong>Data:</strong> 16/03/2026</div>
+      <div class="header-meta-item"><strong>API:</strong> v2.0 (CPRM)</div>
+      <div class="header-meta-item"><strong>Confianca:</strong> <span class="badge badge-warn">MEDIA</span></div>
+    </div>
+  </div>
+
+  <!-- ========== DISCLAIMER / WARNING ========== -->
+  <div class="warning-box" id="disclaimer">
+    <div class="warning-title">&#9888; Importante — Limitacoes deste Relatorio</div>
+    <p>
+      Este screening remoto <strong>NAO substitui investigacao geotecnica de campo</strong> conforme NBR 6122:2019 e NBR 8036:1983. Todas as decisoes de fundacao requerem investigacao de campo por engenheiro geotecnico habilitado (CREA). Os valores apresentados sao estimativas de triagem baseadas em SoilGrids 250m (resolucao 250m) com correcao geologica CPRM 1:1.000.000. Dados de chuva sao estimativas baseadas em cruzamento bibliografico — para projeto, consultar equacao IDF oficial. Profundidade do lencol freatico e estimativa regional — confirmar com sondagem SPT com monitoramento do nivel d'agua.
+    </p>
+  </div>
+
+  <!-- ========== RESUMO EXECUTIVO + VERDICT ========== -->
+  <div class="section" id="resumo">
+    <div class="section-title">1. Resumo Executivo</div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--green);">0/16</div>
+        <div class="kpi-label">Risk Score</div>
+        <div class="kpi-sub">Classe: Low</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--green);">1.00</div>
+        <div class="kpi-label">Fator Premio</div>
+        <div class="kpi-sub">Sem majoracao</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--cyan);">SC</div>
+        <div class="kpi-label">USCS</div>
+        <div class="kpi-sub">Areia Argilosa</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--green);">SIM</div>
+        <div class="kpi-label">Fundacao Rasa</div>
+        <div class="kpi-sub">Viavel</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--yellow);">MEDIA</div>
+        <div class="kpi-label">Confianca</div>
+        <div class="kpi-sub">CPRM disponivel</div>
+      </div>
+    </div>
+
+    <div class="verdict">
+      <h3>Parecer: Risco Geotecnico BAIXO</h3>
+      <p>
+        Risco geotecnico <strong>BAIXO</strong> para fundacoes (score 0/16), <strong>CONDICIONAL</strong> a verificacao de risco de deslizamento (Morro Santa Teresa mapeado pelo SGB). Recomenda-se consulta a setorizacao especifica junto a Defesa Civil. Solo residual granitico com fundacao rasa viavel. Sem risco de inundacao fluvial. Investigacao padrao recomendada (DPL + Visual-Tactil + Granulometria + SPT + Atterberg), com investigacao focada nos parametros prioritarios (~25-35% de economia estimada).
+      </p>
+    </div>
+  </div>
+
+  <!-- ========== RISK ASSESSMENT ========== -->
+  <div class="section" id="risco">
+    <div class="section-title">2. Avaliacao de Risco (Seguro)</div>
+
+    <div class="risk-gauge">
+      <h3 style="color: var(--green);">Risco Geotecnico</h3>
+      <div class="score" style="color: var(--green);">0 / 16</div>
+      <p><span class="badge badge-low" style="font-size: 0.85rem; padding: 0.4rem 1.2rem;">LOW</span></p>
+      <p style="margin-top: 1rem;">Fator de premio: <strong>1.00</strong> (sem majoracao) &nbsp;|&nbsp; Inspecao padrao suficiente</p>
+    </div>
+
+    <div class="section-subtitle">Detalhamento das 8 Flags</div>
+    <div class="card">
+      <ul class="flag-list">
+        <li>
+          <span class="flag-icon flag-pass">&#10003;</span>
+          <span><strong>Permeabilidade</strong> — Ksat 8.76 mm/h &ge; 1.5 mm/h</span>
+          <span class="badge badge-ok" style="margin-left: auto;">PASS</span>
+        </li>
+        <li>
+          <span class="flag-icon flag-pass">&#10003;</span>
+          <span><strong>Erodibilidade</strong> — K 0.188 &le; 0.35</span>
+          <span class="badge badge-ok" style="margin-left: auto;">PASS</span>
+        </li>
+        <li>
+          <span class="flag-icon flag-pass">&#10003;</span>
+          <span><strong>Plasticidade</strong> — PI 14.1 &le; 25</span>
+          <span class="badge badge-ok" style="margin-left: auto;">PASS</span>
+        </li>
+        <li>
+          <span class="flag-icon flag-pass">&#10003;</span>
+          <span><strong>Shrink-Swell</strong> — Moderate (abaixo de Moderate-High)</span>
+          <span class="badge badge-ok" style="margin-left: auto;">PASS</span>
+        </li>
+        <li>
+          <span class="flag-icon flag-pass">&#10003;</span>
+          <span><strong>Compactacao</strong> — Ratio 0.716 < 0.9</span>
+          <span class="badge badge-ok" style="margin-left: auto;">PASS</span>
+        </li>
+        <li>
+          <span class="flag-icon flag-pass">&#10003;</span>
+          <span><strong>CBR</strong> — 13.3% &ge; 5%</span>
+          <span class="badge badge-ok" style="margin-left: auto;">PASS</span>
+        </li>
+        <li>
+          <span class="flag-icon flag-pass">&#10003;</span>
+          <span><strong>Camada impedante</strong> — Nao detectada</span>
+          <span class="badge badge-ok" style="margin-left: auto;">PASS</span>
+        </li>
+        <li>
+          <span class="flag-icon flag-pass">&#10003;</span>
+          <span><strong>USCS</strong> — SC (nao problematico)</span>
+          <span class="badge badge-ok" style="margin-left: auto;">PASS</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========== FUNDACAO + INVESTIGACAO ========== -->
+  <div class="section" id="fundacao">
+    <div class="section-title">3. Fundacao e Plano de Investigacao</div>
+    <div class="cards cards-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Viabilidade de Fundacao Rasa</div>
+          <span class="badge badge-ok">VIAVEL</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Fundacao rasa</span><span class="stat-value" style="color: var(--green);">SIM</span></div>
+          <div class="stat"><span class="stat-label">Sapata corrida</span><span class="stat-value" style="color: var(--green);">Recomendada</span></div>
+          <div class="stat"><span class="stat-label">Radier</span><span class="stat-value" style="color: var(--green);">Recomendada</span></div>
+          <div class="stat"><span class="stat-label">Sapata isolada</span><span class="stat-value" style="color: var(--green);">Recomendada</span></div>
+          <div class="stat"><span class="stat-label">Tubulao a ceu aberto</span><span class="stat-value" style="color: var(--green);">Recomendada</span></div>
+        </div>
+        <div class="card-body" style="margin-top: 0.75rem;">
+          <strong>Sem preocupacoes significativas</strong> no screening. Shrink-swell moderado nao impede fundacao rasa, mas recomenda-se verificar variacao sazonal de umidade.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Comparacao Entre Camadas</div>
+          <span class="badge badge-ok">SEM IMPEDIMENTO</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Salto argila (0&rarr;100cm)</span><span class="stat-value">+12.9%</span></div>
+          <div class="stat"><span class="stat-label">Salto BD (0&rarr;100cm)</span><span class="stat-value">+0.10 kg/dm&sup3;</span></div>
+          <div class="stat"><span class="stat-label">Salto argila (100&rarr;200cm)</span><span class="stat-value">-2.0%</span></div>
+          <div class="stat"><span class="stat-label">Salto BD (100&rarr;200cm)</span><span class="stat-value">+0.03 kg/dm&sup3;</span></div>
+          <div class="stat"><span class="stat-label">Camada impedante</span><span class="stat-value" style="color: var(--green);">NAO</span></div>
+        </div>
+        <div class="card-body" style="margin-top: 0.75rem;">
+          Aumento moderado de argila no horizonte Bt (tipico de Argissolo). Sem contraste abrupto que configure impedimento.
+        </div>
+      </div>
+    </div>
+
+    <!-- Plano de Investigacao Recomendado -->
+    <div class="section-subtitle">Plano de Investigacao Recomendado</div>
+    <div class="kpi-row kpi-row-4">
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--accent);">Padrao</div>
+        <div class="kpi-label">Tier</div>
+        <div class="kpi-sub">Investigacao Padrao</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--green);">~25-35%</div>
+        <div class="kpi-label">Economia Estimada</div>
+        <div class="kpi-sub">Investigacao focada nos parametros prioritarios</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--cyan);">5</div>
+        <div class="kpi-label">Ensaios Prioritarios</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" style="color: var(--text-muted);">6</div>
+        <div class="kpi-label">Ensaios Adicionais</div>
+        <div class="kpi-sub">Sob demanda</div>
+      </div>
+    </div>
+
+    <div class="cards cards-2">
+      <div class="card" style="border-color: var(--green);">
+        <div class="card-header">
+          <div class="card-title" style="color: var(--green);">Ensaios Prioritarios (Recomendados)</div>
+        </div>
+        <table>
+          <thead><tr><th>Ensaio</th><th>Razao</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Penetrometro Dinamico (DPL)</strong></td><td>Triagem rapida de resistencia superficial</td></tr>
+            <tr><td><strong>Inspecao Visual e Tactil (NBR 7250)</strong></td><td>Classificacao obrigatoria</td></tr>
+            <tr><td><strong>Analise Granulometrica (NBR 7181)</strong></td><td>Confirmar distribuicao granulometrica do solo residual</td></tr>
+            <tr><td><strong>Sondagem SPT (NBR 6484)</strong></td><td>Resistencia in-situ, profundidade do impenetravel, nivel d'agua</td></tr>
+            <tr><td><strong>Limites de Atterberg (NBR 6459/7180)</strong></td><td>Confirmar plasticidade e classificacao USCS</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Estrategia SPT</div>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Profundidade</span><span class="stat-value">6-8 m (min. NBR 8036)</span></div>
+          <div class="stat"><span class="stat-label">Espacamento</span><span class="stat-value">1 furo a cada 200 m&sup2;</span></div>
+          <div class="stat"><span class="stat-label">Observacao</span><span class="stat-value">Verificar profundidade do impenetravel (rocha granitica)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-full" style="margin-top: 1rem;">
+      <div class="card-header">
+        <div class="card-title" style="color: var(--text-muted);">Ensaios Adicionais (sob demanda)</div>
+      </div>
+      <table>
+        <thead><tr><th>Ensaio</th><th>Quando Solicitar</th></tr></thead>
+        <tbody>
+          <tr><td>Ensaio Proctor Normal (NBR 7182)</td><td>Se indicacao de compactacao problematica no campo</td></tr>
+          <tr><td>Ensaio CBR (NBR 9895)</td><td>Se necessario dimensionamento de pavimento ou aterro</td></tr>
+          <tr><td>Ensaio de Permeabilidade (NBR 14545)</td><td>Se necessario projeto de drenagem subterranea</td></tr>
+          <tr><td>Ensaio de Adensamento (NBR 12007)</td><td>Se detectado risco de recalque no SPT</td></tr>
+          <tr><td>Analise de Agressividade Quimica</td><td>Se condicoes agressivas detectadas no campo</td></tr>
+          <tr><td>Ensaio de Cisalhamento Direto (NBR 12770)</td><td>Se necessario projeto de contencao em encosta</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <strong>Validacao recomendada:</strong> Mineralogia caulinita+oxidos — confirmar argilo-mineral dominante via DRX (difracao de raios-X). A proporcao de caulinita pode variar localmente dentro da Facies Serra do Herval.
+    </div>
+  </div>
+
+  <!-- ========== RISCO AMBIENTAL ========== -->
+  <div class="section" id="ambiental">
+    <div class="section-title">4. Risco Ambiental</div>
+    <div class="cards cards-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Area de Inundacao</div>
+          <span class="badge badge-ok">NULO</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Cota de inundacao POA</span><span class="stat-value">3.00 m</span></div>
+          <div class="stat"><span class="stat-label">Maxima historica (mai/2024)</span><span class="stat-value">5.35 m</span></div>
+          <div class="stat"><span class="stat-label">Cota estimada do terreno</span><span class="stat-value">~40-80 m</span></div>
+          <div class="stat"><span class="stat-label">Margem de seguranca</span><span class="stat-value" style="color: var(--green);">+35 a 75 m</span></div>
+          <div class="stat"><span class="stat-label">Na lista de atingidos (2024)</span><span class="stat-value" style="color: var(--green);">NAO</span></div>
+          <div class="stat"><span class="stat-label">Risco fluvial</span><span class="stat-value" style="color: var(--green);">NULO</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Lencol Freatico</div>
+          <span class="badge badge-info">ESTIMADO</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Tipo de aquifero</span><span class="stat-value">Cristalino fraturado</span></div>
+          <div class="stat"><span class="stat-label">Produtividade</span><span class="stat-value">Baixa</span></div>
+          <div class="stat"><span class="stat-label">Zona de meteorizacao</span><span class="stat-value">5-20 m sobre granito</span></div>
+          <div class="stat"><span class="stat-label">Profundidade estimada</span><span class="stat-value" style="color: var(--cyan); font-size: 1.1rem;">8 a 15+ metros</span></div>
+          <div class="stat"><span class="stat-label">Comportamento</span><span class="stat-value">Acompanha topografia</span></div>
+          <div class="stat"><span class="stat-label">Recarga</span><span class="stat-value">Moderada (Ksat 8.76 mm/h)</span></div>
+        </div>
+        <div class="card-body" style="margin-top: 0.75rem;">
+          Em terrenos graniticos de morro, o lencol freatico tende a ser <strong>profundo</strong> nas posicoes de encosta/crista. A posicao elevada no Morro Santa Teresa (~40-80 m) e a permeabilidade moderada sugerem que o NA esta <strong>bem abaixo da zona de fundacao</strong>. <strong>Confirmacao obrigatoria via SPT com monitoramento do nivel d'agua.</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chuvas Intensas -->
+    <div class="section-subtitle">Chuvas Intensas — ERA5 + Literatura</div>
+    <div class="card card-full">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Precipitacao Extrema — Meteoblue ERA5</div>
+          <div class="card-subtitle">ERA5 Reanalysis (hourly, 1985-2024, 40 anos) | Gumbel Type I | Alt. 98 m</div>
+        </div>
+        <span class="badge badge-purple">40 ANOS</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Retorno</th>
+            <th>ERA5 1h (mm)</th>
+            <th>Literatura 1h (mm)</th>
+            <th>ERA5 24h (mm)</th>
+            <th>Status 1h</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2 anos</td><td>12.4</td><td>—</td><td>72.8</td><td><span class="badge badge-na">—</span></td></tr>
+          <tr><td>5 anos</td><td>15.1</td><td>—</td><td>89.1</td><td><span class="badge badge-na">—</span></td></tr>
+          <tr><td>10 anos</td><td>16.9</td><td>—</td><td>99.8</td><td><span class="badge badge-na">—</span></td></tr>
+          <tr class="highlight-row"><td><strong>15 anos</strong></td><td><strong>17.9</strong></td><td><strong>~55-65</strong></td><td><strong>105.9</strong></td><td><span class="badge badge-warn">1h subestimado</span></td></tr>
+          <tr><td>25 anos</td><td>19.2</td><td>—</td><td>113.4</td><td><span class="badge badge-na">—</span></td></tr>
+          <tr class="highlight-row"><td><strong>50 anos</strong></td><td><strong>20.8</strong></td><td><strong>~65-80</strong></td><td><strong>123.5</strong></td><td><span class="badge badge-warn">1h subestimado</span></td></tr>
+          <tr class="highlight-row"><td><strong>100 anos</strong></td><td><strong>22.5</strong></td><td><strong>~75-90</strong></td><td><strong>133.5</strong></td><td><span class="badge badge-warn">1h subestimado</span></td></tr>
+        </tbody>
+      </table>
+      <div class="card-body" style="margin-top: 0.75rem;">
+        <strong>Gumbel 1h:</strong> &mu;=11.57, &alpha;=2.37 (media=12.94, &sigma;=3.04)<br>
+        <strong>Gumbel 24h:</strong> &mu;=67.57, &alpha;=14.34 (media=75.84, &sigma;=18.39)
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Nota sobre resolucao ERA5:</strong> Os valores de 1h do ERA5 (~31 km grid) subestimam picos convectivos pontuais — a coluna "Literatura 1h" (Weschenfelder 2015, SGB) mostra a faixa esperada para referencia. Os valores 24h do ERA5 sao mais confiaveis (media 75.8 mm, coerente com registros pluviometricos). Os dados ERA5 sao <strong>suplementares</strong> e nao devem ser usados para dimensionamento — <strong>para projeto, utilizar a equacao IDF oficial do DEP/SGB com coeficientes locais.</strong>
+    </div>
+
+    <div class="note">
+      <strong>Atencao — Risco de deslizamento:</strong> Morro Santa Teresa esta mapeado pelo SGB como area com risco de movimentos de massa (deslizamentos planares, em cunha, queda de blocos). Porto Alegre possui 91 areas de risco alto e 51 de risco muito alto — numero quintuplicou nos ultimos 10 anos. Embora o risco de inundacao fluvial seja nulo, recomenda-se verificar a setorizacao especifica do lote junto a Defesa Civil.
+    </div>
+  </div>
+
+  <!-- ========== DIVIDER ========== -->
+  <div class="section-divider">
+    <h2>Detalhamento Tecnico</h2>
+  </div>
+
+  <!-- ========== GEOLOGICAL CONTEXT (collapsible) ========== -->
+  <details id="geologia">
+    <summary>5. Contexto Geologico</summary>
+    <div class="cards cards-2">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Formacao Geologica</div>
+            <div class="card-subtitle">Fonte: SGB/CPRM GeoSGB (1:1M)</div>
+          </div>
+          <span class="badge badge-purple">CPRM</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Formacao</span><span class="stat-value">Facies Serra do Herval</span></div>
+          <div class="stat"><span class="stat-label">Litologia</span><span class="stat-value">Sienogranito</span></div>
+          <div class="stat"><span class="stat-label">Idade</span><span class="stat-value">Neoproterozoico</span></div>
+          <div class="stat"><span class="stat-label">Provincia</span><span class="stat-value">Escudo Cristalino Sul-Rio-Grandense</span></div>
+          <div class="stat"><span class="stat-label">Cinturao</span><span class="stat-value">Dom Feliciano (Brasiliano)</span></div>
+          <div class="stat"><span class="stat-label">Mineralogia argila</span><span class="stat-value">Caulinita + oxidos</span></div>
+          <div class="stat"><span class="stat-label">Activity ratio</span><span class="stat-value">0.45</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Caracterizacao do Terreno</div>
+            <div class="card-subtitle">Dados regionais e topograficos</div>
+          </div>
+          <span class="badge badge-info">REGIONAL</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Localizacao</span><span class="stat-value">Encosta do Morro Santa Teresa</span></div>
+          <div class="stat"><span class="stat-label">Cota do morro</span><span class="stat-value">148 m (pico)</span></div>
+          <div class="stat"><span class="stat-label">Cota estimada terreno</span><span class="stat-value">~40-80 m</span></div>
+          <div class="stat"><span class="stat-label">Rocha-mae</span><span class="stat-value">Granito (Viamao/Serra do Herval)</span></div>
+          <div class="stat"><span class="stat-label">Solo</span><span class="stat-value">Residual granitico (Argissolo)</span></div>
+          <div class="stat"><span class="stat-label">Pedologia</span><span class="stat-value">Argissolo Amarelo Distrofico</span></div>
+          <div class="stat"><span class="stat-label">Perfil</span><span class="stat-value">Laterizado &rarr; Saprolitico &rarr; Rocha</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Granitos de Porto Alegre:</strong> O embasamento cristalino inclui Granito Viamao (monzogranito porfiritico, K-feldspato 1-5 cm), Granito Vila Garcia (sienogranito avermelhado), Granito Passo do Barco e outros. A Facies Serra do Herval e um sienogranito isotropico do Neoproterozoico, correlato ao Cinturao Dom Feliciano. Mapeamento geotecnico de referencia: Bastos & Dias (UFRGS).
+    </div>
+  </details>
+
+  <!-- ========== SOIL PROFILE (collapsible) ========== -->
+  <details id="perfil">
+    <summary>6. Perfil do Solo (SoilGrids 250m)</summary>
+
+    <div class="layer-box layer-surface">
+      <div class="layer-header">
+        <span class="layer-title">Camada Superficial — Horizonte A</span>
+        <span class="badge badge-info">0-30 cm</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="stat-label">Textura</span><span class="stat-value">Sandy Clay Loam</span></div>
+        <div class="stat"><span class="stat-label">Argila</span><span class="stat-value">27.61%</span></div>
+        <div class="stat"><span class="stat-label">Areia</span><span class="stat-value">48.61%</span></div>
+        <div class="stat"><span class="stat-label">Silte</span><span class="stat-value">23.77%</span></div>
+        <div class="stat"><span class="stat-label">Materia Organica</span><span class="stat-value">7.49%</span></div>
+        <div class="stat"><span class="stat-label">pH</span><span class="stat-value">5.22 (acido)</span></div>
+        <div class="stat"><span class="stat-label">Densidade</span><span class="stat-value">1.14 kg/dm&sup3;</span></div>
+        <div class="stat"><span class="stat-label">CEC</span><span class="stat-value">23.70 cmol/kg</span></div>
+        <div class="stat"><span class="stat-label">Frag. Grossos</span><span class="stat-value">9.50%</span></div>
+        <div class="stat"><span class="stat-label">AWC</span><span class="stat-value">41.9 mm</span></div>
+      </div>
+    </div>
+
+    <div class="layer-box layer-foundation">
+      <div class="layer-header">
+        <span class="layer-title">Camada de Fundacao — Horizonte Bt</span>
+        <span class="badge badge-high">30-100 cm</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="stat-label">Textura</span><span class="stat-value">Clay</span></div>
+        <div class="stat"><span class="stat-label">Argila</span><span class="stat-value">40.55% (efetiva: 18.2%)</span></div>
+        <div class="stat"><span class="stat-label">Areia</span><span class="stat-value">38.22%</span></div>
+        <div class="stat"><span class="stat-label">Silte</span><span class="stat-value">21.23%</span></div>
+        <div class="stat"><span class="stat-label">Materia Organica</span><span class="stat-value">4.02%</span></div>
+        <div class="stat"><span class="stat-label">pH</span><span class="stat-value">5.31</span></div>
+        <div class="stat"><span class="stat-label">Densidade</span><span class="stat-value">1.24 kg/dm&sup3;</span></div>
+        <div class="stat"><span class="stat-label">CEC</span><span class="stat-value">23.21 cmol/kg</span></div>
+        <div class="stat"><span class="stat-label">Frag. Grossos</span><span class="stat-value">12.05%</span></div>
+        <div class="stat"><span class="stat-label">AWC</span><span class="stat-value">54.6 mm</span></div>
+      </div>
+    </div>
+
+    <div class="layer-box layer-deep">
+      <div class="layer-header">
+        <span class="layer-title">Camada Profunda — Saprolito</span>
+        <span class="badge badge-ok">100-200 cm</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="stat-label">Textura</span><span class="stat-value">Clay Loam</span></div>
+        <div class="stat"><span class="stat-label">Argila</span><span class="stat-value">38.55%</span></div>
+        <div class="stat"><span class="stat-label">Areia</span><span class="stat-value">38.28%</span></div>
+        <div class="stat"><span class="stat-label">Silte</span><span class="stat-value">23.17%</span></div>
+        <div class="stat"><span class="stat-label">Materia Organica</span><span class="stat-value">3.61%</span></div>
+        <div class="stat"><span class="stat-label">pH</span><span class="stat-value">5.35</span></div>
+        <div class="stat"><span class="stat-label">Densidade</span><span class="stat-value">1.27 kg/dm&sup3;</span></div>
+        <div class="stat"><span class="stat-label">CEC</span><span class="stat-value">22.56 cmol/kg</span></div>
+        <div class="stat"><span class="stat-label">Frag. Grossos</span><span class="stat-value">12.55%</span></div>
+        <div class="stat"><span class="stat-label">AWC</span><span class="stat-value">94.7 mm</span></div>
+      </div>
+    </div>
+
+    <!-- Gradiente textural -->
+    <div class="section-subtitle">Gradiente Textural (Argila)</div>
+    <div class="bar-container">
+      <span class="bar-label">0-30 cm</span>
+      <div class="bar-track"><div class="bar-fill" style="width: 46%; background: var(--cyan);">27.6%</div></div>
+      <span class="bar-value">27.61%</span>
+    </div>
+    <div class="bar-container">
+      <span class="bar-label">30-100 cm</span>
+      <div class="bar-track"><div class="bar-fill" style="width: 68%; background: var(--orange);">40.6%</div></div>
+      <span class="bar-value">40.55%</span>
+    </div>
+    <div class="bar-container">
+      <span class="bar-label">100-200 cm</span>
+      <div class="bar-track"><div class="bar-fill" style="width: 64%; background: var(--green);">38.6%</div></div>
+      <span class="bar-value">38.55%</span>
+    </div>
+    <div class="note">
+      <strong>Salto de argila:</strong> +12.9% entre superficie e fundacao (moderado). Perfil tipico de Argissolo — acumulo de argila no horizonte Bt. Nao configura camada impedante (limiar: +15%).
+    </div>
+  </details>
+
+  <!-- ========== GEOTECHNICAL PROPERTIES (collapsible) ========== -->
+  <details id="geotecnia">
+    <summary>7. Derivacoes Geotecnicas</summary>
+    <div class="cards cards-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Hidraulica</div>
+          <span class="badge badge-ok">MODERADA</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Ksat</span><span class="stat-value">8.76 mm/h</span></div>
+          <div class="stat"><span class="stat-label">Permeabilidade</span><span class="stat-value">Moderate</span></div>
+        </div>
+        <div class="card-body" style="margin-top: 0.75rem;">
+          Permeabilidade <strong>moderada</strong>. Mineralogia caulinita+oxidos com argila efetiva de 18.2% permite boa condutividade. Ref: Saxton & Rawls (2006).
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Erodibilidade</div>
+          <span class="badge badge-ok">BAIXA</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">K-factor (EPIC)</span><span class="stat-value">0.188</span></div>
+          <div class="stat"><span class="stat-label">Risco erosao</span><span class="stat-value">Low</span></div>
+        </div>
+        <div class="card-body" style="margin-top: 0.75rem;">
+          Boa resistencia a erosao laminar. Alto teor de MO (7.5%) na superficie contribui para agregacao. Ref: Williams/EPIC (1995).
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Plasticidade</div>
+          <span class="badge badge-ok">BAIXA-MOD</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">LL (estimado)</span><span class="stat-value">31.8</span></div>
+          <div class="stat"><span class="stat-label">LP (estimado)</span><span class="stat-value">17.7</span></div>
+          <div class="stat"><span class="stat-label">IP (estimado)</span><span class="stat-value">14.1</span></div>
+        </div>
+        <div class="card-body" style="margin-top: 0.75rem;">
+          Plasticidade baixa a moderada. IP < 25 — nao aciona flag de risco. Confirmar com ensaio de Atterberg (NBR 6459/7180).
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Expansao-Retracao</div>
+          <span class="badge badge-warn">MODERADA</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Score</span><span class="stat-value">3/9</span></div>
+          <div class="stat"><span class="stat-label">Classe</span><span class="stat-value">Moderate</span></div>
+        </div>
+        <div class="card-body" style="margin-top: 0.75rem;">
+          Potencial moderado de shrink-swell. CEC elevada (23.2 cmol/kg) mas mineralogia caulinita+oxidos reduz atividade real. Nao atinge "Moderate-High" (limiar flag).
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Compactacao</div>
+          <span class="badge badge-ok">MUITO BAIXA</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">BD critica</span><span class="stat-value">1.731 kg/dm&sup3;</span></div>
+          <div class="stat"><span class="stat-label">BD atual</span><span class="stat-value">1.24 kg/dm&sup3;</span></div>
+          <div class="stat"><span class="stat-label">Ratio</span><span class="stat-value">0.716</span></div>
+        </div>
+        <div class="card-body" style="margin-top: 0.75rem;">
+          Muito abaixo do limiar critico. Solo nao compactado. Ref: Reichert et al. (2009).
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Capacidade de Suporte</div>
+          <span class="badge badge-ok">RAZOAVEL-BOM</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">CBR estimado</span><span class="stat-value">13.3%</span></div>
+          <div class="stat"><span class="stat-label">Subleito</span><span class="stat-value">Fair-Good</span></div>
+        </div>
+        <div class="card-body" style="margin-top: 0.75rem;">
+          CBR >= 5% — viavel para fundacoes rasas. Acima do limiar de risco. Confirmar com ensaio CBR (NBR 9895) se necessario.
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ========== DRAINAGE (collapsible) ========== -->
+  <details id="drenagem">
+    <summary>8. Solos Predominantes e Drenagem</summary>
+    <div class="cards cards-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Presenca Predominante de Solos</div>
+        </div>
+        <div class="card-body">
+          <strong>Solo residual de granito</strong> — perfil de meteorizacao do sienogranito Neoproterozoico:
+          <br><br>
+          <strong style="color: var(--cyan);">Horizonte A (0-30 cm):</strong> Franco argilo-arenoso, rico em MO (7.5%), laterizado, coloracao provavel avermelhada/amarelada (oxidos de ferro).
+          <br><br>
+          <strong style="color: var(--orange);">Horizonte Bt (30-100 cm):</strong> Argiloso (40.6% argila, efetiva 18.2%), horizonte de acumulo de argila translocada — <strong>Argissolo</strong>.
+          <br><br>
+          <strong style="color: var(--green);">Horizonte C (100-200+ cm):</strong> Franco argiloso, minerais primarios parcialmente preservados, fragmentos grossos (12.6%) — transicao para saprolito.
+          <br><br>
+          <strong>Abaixo de ~5-15 m:</strong> Saprolito granitico &rarr; Sienogranito (rocha sa, impenetravel).
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Drenagem e Permeabilidade</div>
+        </div>
+        <div class="card-body">
+          <strong style="color: var(--green);">Solos profundos altamente permeaveis? NAO, mas moderadamente permeaveis.</strong>
+          <br><br>
+          A permeabilidade e <strong>moderada</strong> (Ksat = 8.76 mm/h). A mineralogia caulinita+oxidos com teor efetivo de 18.2% de argila nas camadas de fundacao permite condutividade hidraulica razoavel.
+          <br><br>
+          O solo e <strong>moderadamente drenado</strong> — nao e "bem drenado" como solos arenosos puros (ex: Caiua, Ksat >28 mm/h), mas a combinacao de permeabilidade moderada com posicao de encosta favorece drenagem adequada.
+          <br><br>
+          <strong>Abaixo de 200 cm:</strong> Permeabilidade depende do grau de fraturamento do granito. Rocha sa e praticamente impermeavel — fluxo apenas por fraturas.
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ========== LITERATURE + MINERALOGICAL CORRECTION (collapsible) ========== -->
+  <details id="literatura">
+    <summary>9. Literatura de Referencia e Correcao Mineralogica</summary>
+
+    <div class="section-subtitle">Propriedades Geotecnicas de Referencia (Literatura)</div>
+    <div class="card card-full">
+      <div class="card-header">
+        <div class="card-title">Solo Residual Granitico — Porto Alegre (Bastos & Dias, UFRGS)</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Parametro</th>
+            <th>Horizonte Saprolitico</th>
+            <th>Horizonte Laterizado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Angulo de atrito (&#966;)</td>
+            <td>32-37&deg;</td>
+            <td>25-30&deg;</td>
+          </tr>
+          <tr>
+            <td>Coesao (c')</td>
+            <td>2-12 kPa (saturado)</td>
+            <td>5-20 kPa</td>
+          </tr>
+          <tr>
+            <td>Composicao</td>
+            <td>Areno-siltoso</td>
+            <td>Argilo-siltoso</td>
+          </tr>
+          <tr>
+            <td>SPT (tipico)</td>
+            <td>8-30+</td>
+            <td>3-10</td>
+          </tr>
+          <tr>
+            <td>Peso especifico</td>
+            <td>17-19 kN/m&sup3;</td>
+            <td>15-17 kN/m&sup3;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-subtitle">Correcao Mineralogica (CPRM v2.0)</div>
+    <div class="cards cards-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Correcao Aplicada</div>
+          <span class="badge badge-purple">v2.0</span>
+        </div>
+        <div class="stats stats-1">
+          <div class="stat"><span class="stat-label">Formacao CPRM</span><span class="stat-value">Facies Serra do Herval</span></div>
+          <div class="stat"><span class="stat-label">Formation key</span><span class="stat-value">granito</span></div>
+          <div class="stat"><span class="stat-label">Mineral dominante</span><span class="stat-value">Caulinita + oxidos</span></div>
+          <div class="stat"><span class="stat-label">Activity ratio</span><span class="stat-value">0.45</span></div>
+          <div class="stat"><span class="stat-label">Argila raw (30-100cm)</span><span class="stat-value">40.55%</span></div>
+          <div class="stat"><span class="stat-label">Argila efetiva</span><span class="stat-value">18.2%</span></div>
+          <div class="stat"><span class="stat-label">Reducao</span><span class="stat-value">-55%</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Nivel de Confianca</div>
+          <span class="badge badge-warn">MEDIA</span>
+        </div>
+        <div class="card-body">
+          <strong>Criterios atendidos:</strong>
+          <br><br>
+          1. Contexto geologico <strong>disponivel</strong> (CPRM retornou formacao)<br>
+          2. Activity ratio = 0.45 (<strong>&lt; 0.5</strong> — confianca media)<br><br>
+          A correcao mineralogica com ratio 0.45 indica que a argila caulinita+oxidos tem ~45% da atividade de uma argila pura. A reducao de 40.55% &rarr; 18.2% e significativa, refletindo a predominancia de caulinita (inerte) e oxidos de ferro (nao-expansivos) tipicos de solo residual granitico laterizado.
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ========== SOURCES (collapsible) ========== -->
+  <details id="fontes">
+    <summary>10. Fontes</summary>
+    <div class="card card-full">
+      <table>
+        <thead><tr><th>#</th><th>Fonte</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr><td>F01</td><td>SoilGrids 250m v2.0 — ISRIC via Google Earth Engine</td><td><span class="badge badge-info">API</span></td></tr>
+          <tr><td>F02</td><td>SGB/CPRM GeoSGB — Litoestratigrafia 1:1.000.000 (WFS 2.0)</td><td><span class="badge badge-info">API</span></td></tr>
+          <tr><td>F03</td><td>API Geotecnica TMO v2.0 — Cloud Function GCP</td><td><span class="badge badge-info">API</span></td></tr>
+          <tr class="highlight-row"><td>F04</td><td>Mapa Geologico de Porto Alegre (1:100.000) — ResearchGate</td><td><span class="badge badge-purple">GEOLOGIA</span></td></tr>
+          <tr><td>F05</td><td>SGB Mapa de Mineracao de Porto Alegre</td><td><span class="badge badge-purple">GEOLOGIA</span></td></tr>
+          <tr><td>F06</td><td>UFRGS Pesquisas em Geociencias — Granitos pos-transcorrentes POA</td><td><span class="badge badge-purple">GEOLOGIA</span></td></tr>
+          <tr><td>F07</td><td>Geobrasiliensis — Geoquimica granitos POA e Viamao</td><td><span class="badge badge-purple">GEOLOGIA</span></td></tr>
+          <tr class="highlight-row"><td>F08</td><td>Bastos & Dias — Tese UFRGS (mapeamento geomecanico POA)</td><td><span class="badge badge-high">GEOTECNIA</span></td></tr>
+          <tr class="highlight-row"><td>F09</td><td>Bastos & Dias (1995) — Unidades geotecnicas POA, Rev. Inst. Geol. v.16</td><td><span class="badge badge-high">GEOTECNIA</span></td></tr>
+          <tr><td>F10</td><td>Bastos & Dias — VETOR/FURG — Mapeamento geotecnico</td><td><span class="badge badge-high">GEOTECNIA</span></td></tr>
+          <tr><td>F11</td><td>SciELO — Topossequencia granitica POA (Argissolos/Cambissolos)</td><td><span class="badge badge-high">GEOTECNIA</span></td></tr>
+          <tr><td>F12</td><td>UFRGS LUME — Solos lateriticos</td><td><span class="badge badge-high">GEOTECNIA</span></td></tr>
+          <tr class="highlight-row"><td>F13</td><td>SGB — Setorizacao de Areas de Risco de Porto Alegre</td><td><span class="badge badge-critical">RISCO</span></td></tr>
+          <tr><td>F14</td><td>Prefeitura POA — Mapa Inundacao 06/05/2024</td><td><span class="badge badge-critical">RISCO</span></td></tr>
+          <tr><td>F15</td><td>Prefeitura POA — Mapeamento Areas de Risco</td><td><span class="badge badge-critical">RISCO</span></td></tr>
+          <tr><td>F16</td><td>SGB — Areas de risco muito alto quintuplicaram em POA</td><td><span class="badge badge-critical">RISCO</span></td></tr>
+          <tr><td>F17</td><td>Caos Planejado — Entendendo enchentes POA</td><td><span class="badge badge-critical">RISCO</span></td></tr>
+          <tr><td>F18</td><td>UFRGS IPH — Mapa da inundacao POA</td><td><span class="badge badge-critical">RISCO</span></td></tr>
+          <tr><td>F19</td><td>ObservaPOA — Dados inundacao 2024</td><td><span class="badge badge-critical">RISCO</span></td></tr>
+          <tr class="highlight-row"><td>F20a</td><td><strong>Meteoblue ERA5 Reanalysis (hourly, 1985-2024, 40 anos)</strong> — Precipitacao horaria para calculo IDF via Gumbel</td><td><span class="badge badge-purple">METEOBLUE</span></td></tr>
+          <tr class="highlight-row"><td>F20b</td><td><strong>Meteoblue Climatologia (modelclimate-day)</strong> — Medias climatologicas 35 anos</td><td><span class="badge badge-purple">METEOBLUE</span></td></tr>
+          <tr><td>F20c</td><td>Weschenfelder et al. (2015) — Curvas IDF atualizadas, PDDrU POA</td><td><span class="badge badge-moderate">IDF</span></td></tr>
+          <tr><td>F21</td><td>Benfica (1999) — IDF via 8&deg; DISME/INMET</td><td><span class="badge badge-moderate">IDF</span></td></tr>
+          <tr><td>F22</td><td>SGB Atlas Pluviometrico — Porto Alegre</td><td><span class="badge badge-moderate">IDF</span></td></tr>
+          <tr><td>F23</td><td>SGB Equacoes IDF — Portal</td><td><span class="badge badge-moderate">IDF</span></td></tr>
+          <tr><td>F24</td><td>SGB IDF — Rio Grande do Sul</td><td><span class="badge badge-moderate">IDF</span></td></tr>
+          <tr><td>F25</td><td>SciELO — Projecoes IDF POA (clima futuro)</td><td><span class="badge badge-moderate">IDF</span></td></tr>
+          <tr><td>F26</td><td>DEP — Manual de Drenagem de Porto Alegre</td><td><span class="badge badge-moderate">IDF</span></td></tr>
+          <tr><td>F27</td><td>UFRGS LUME — Tese curvas IDF</td><td><span class="badge badge-moderate">IDF</span></td></tr>
+          <tr><td>F28</td><td>Springer — Weathered Crystalline Aquifers</td><td><span class="badge badge-na">HIDRO</span></td></tr>
+          <tr><td>F29</td><td>Topographic Map — Morro Santa Teresa</td><td><span class="badge badge-na">TOPO</span></td></tr>
+          <tr><td>F30</td><td>Wikimapia — Morro Santa Tereza</td><td><span class="badge badge-na">TOPO</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-subtitle">Referencias Academicas das PTFs</div>
+    <div class="card card-full">
+      <div class="card-body">
+        <strong>R01</strong> — Saxton, K.E. & Rawls, W.J. (2006). Soil Water Characteristic Estimates by Texture and Organic Matter. SSSA Journal.<br>
+        <strong>R02</strong> — Williams, J.R. (1995). The EPIC Model. Computer Models of Watershed Hydrology.<br>
+        <strong>R03</strong> — Reichert, J.M. et al. (2009). Reference bulk density and critical degree-of-compactness. Soil & Tillage Research.<br>
+        <strong>R04</strong> — Vargas, M. (1977). Introducao a Mecanica dos Solos. McGraw-Hill/EDUSP.<br>
+        <strong>R05</strong> — Pinto, C.S. (2006). Curso Basico de Mecanica dos Solos. Oficina de Textos.<br>
+        <strong>R06</strong> — Nogueira, J.B. (2001). Mecanica dos Solos — Ensaios de Laboratorio. EESC-USP.
+      </div>
+    </div>
+
+    <div class="section-subtitle">Normas Tecnicas</div>
+    <div class="card card-full">
+      <div class="card-body">
+        NBR 6122:2019 (Fundacoes) &bull; NBR 8036:1983 (Sondagens SPT) &bull; NBR 6484 (SPT) &bull; NBR 7181 (Granulometria) &bull; NBR 7182 (Proctor) &bull; NBR 9895 (CBR) &bull; NBR 6459 (LL) &bull; NBR 7180 (LP) &bull; NBR 7250 (Visual-tactil) &bull; NBR 14545 (Permeabilidade) &bull; NBR 12007 (Adensamento) &bull; NBR 12770 (Cisalhamento) &bull; ASTM D2487 (USCS)
+      </div>
+    </div>
+  </details>
+
+  <!-- ========== FOOTER ========== -->
+  <div class="footer">
+    <p>TMO Geotechnical Screening v2.0 &bull; GoSellers &bull; Gerado em 16/03/2026</p>
+    <p style="margin-top: 0.5rem;">Dados brutos completos disponiveis em: <code style="background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem;">2026-03-16_-30.0753_-51.2310_dados_brutos.md</code></p>
+  </div>
+
+  </div>
+  </div>
+
+</div>
+</body>
+</html>
